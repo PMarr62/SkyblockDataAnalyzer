@@ -1,0 +1,873 @@
+{
+    "ENCHANTED_BREAD": {
+        "WHEAT": 60
+    },
+    "ENCHANTED_WHEAT": {
+        "WHEAT": 160
+    },
+    "HAY_BLOCK": {
+        "WHEAT": 9
+    },
+    "ENCHANTED_HAY_BLOCK": {
+        "HAY_BLOCK": 144
+    },
+    "TIGHTLY_TIED_HAY_BALE": {
+        "ENCHANTED_HAY_BLOCK": 144
+    },
+    "ENCHANTED_SEEDS": {
+        "SEEDS": 160
+    },
+    "BOX_OF_SEEDS": {
+        "ENCHANTED_SEEDS": 160
+    },
+    "ENCHANTED_CARROT": {
+        "CARROT_ITEM": 160
+    },
+    "ENCHANTED_CARROT_STICK": {
+        "ENCHANTED_CARROT": 64
+    },
+    "ENCHANTED_GOLDEN_CARROT": {
+        "ENCHANTED_CARROT": 128,
+        "GOLDEN_CARROT": 32
+    },
+    "ENCHANTED_POTATO": {
+        "POTATO_ITEM": 160
+    },
+    "ENCHANTED_POISONOUS_POTATO": {
+        "POISONOUS_POTATO": 160
+    },
+    "ENCHANTED_BAKED_POTATO": {
+        "ENCHANTED_POTATO": 160
+    },
+    "ENCHANTED_PUMPKIN": {
+        "PUMPKIN": 160
+    },
+    "POLISHED_PUMPKIN": {
+        "ENCHANTED_PUMPKIN": 160
+    },
+    "ENCHANTED_MELON": {
+        "MELON": 160
+    },
+    "ENCHANTED_MELON_BLOCK": {
+        "ENCHANTED_MELON": 160
+    },
+    "ENCHANTED_RED_MUSHROOM": {
+        "RED_MUSHROOM": 160
+    },
+    "HUGE_MUSHROOM_2": {
+        "RED_MUSHROOM": 9
+    },
+    "ENCHANTED_HUGE_MUSHROOM_2": {
+        "ENCHANTED_RED_MUSHROOM": 32
+    },
+    "ENCHANTED_BROWN_MUSHROOM": {
+        "BROWN_MUSHROOM": 160
+    },
+    "HUGE_MUSHROOM_1": {
+        "BROWN_MUSHROOM": 9
+    },
+    "ENCHANTED_HUGE_MUSHROOM_1": {
+        "ENCHANTED_BROWN_MUSHROOM": 32
+    },
+    "ENCHANTED_COCOA": {
+        "INK_SACK:3": 160
+    },
+    "ENCHANTED_COOKIE": {
+        "ENCHANTED_COCOA": 128,
+        "WHEAT": 32
+    },
+    "ENCHANTED_CACTUS_GREEN": {
+        "CACTUS": 160
+    },
+    "ENCHANTED_CACTUS": {
+        "ENCHANTED_CACTUS_GREEN": 160
+    },
+    "ENCHANTED_SUGAR": {
+        "SUGAR_CANE": 160
+    },
+    "ENCHANTED_SUGAR_CANE": {
+        "ENCHANTED_SUGAR": 160
+    },
+    "ENCHANTED_LEATHER": {
+        "LEATHER": 160
+    },
+    "ENCHANTED_RAW_BEEF": {
+        "RAW_BEEF": 160
+    },
+    "ENCHANTED_PORK": {
+        "PORK": 160
+    },
+    "ENCHANTED_GRILLED_PORK": {
+        "ENCHANTED_PORK": 160
+    },
+    "ENCHANTED_RAW_CHICKEN": {
+        "RAW_CHICKEN": 160
+    },
+    "ENCHANTED_CAKE": {
+        "ENCHANTED_SUGAR": 2,
+        "ENCHANTED_EGG": 1,
+        "WHEAT": 3
+    },
+    "ENCHANTED_FEATHER": {
+        "FEATHER": 160
+    },
+    "SUPER_EGG": {
+        "ENCHANTED_EGG": 144
+    },
+    "OMEGA_EGG": {
+        "SUPER_EGG": 9
+    },
+    "ENCHANTED_MUTTON": {
+        "MUTTON": 160
+    },
+    "ENCHANTED_COOKED_MUTTON": {
+        "ENCHANTED_MUTTON": 160
+    },
+    "ENCHANTED_WOOL": {
+        "WOOL": 160
+    },
+    "ENCHANTED_RABBIT": {
+        "RABBIT": 160
+    },
+    "ENCHANTED_RABBIT_FOOT": {
+        "RABBIT_FOOT": 160
+    },
+    "ENCHANTED_RABBIT_HIDE": {
+        "RABBIT_HIDE": 576
+    },
+    "ENCHANTED_NETHER_STALK": {
+        "NETHER_STALK": 160
+    },
+    "MUTANT_NETHER_STALK": {
+        "ENCHANTED_NETHER_STALK": 160
+    },
+    "ENCHANTED_COMPOST": {
+        "COMPOST": 160
+    },
+    "CONDENSED_FERMENTO": {
+        "FERMENTO": 9
+    },
+    "ENCHANTED_COBBLESTONE": {
+        "COBBLESTONE": 160
+    },
+    "ENCHANTED_COAL": {
+        "COAL": 160
+    },
+    "ENCHANTED_COAL_BLOCK": {
+        "ENCHANTED_COAL": 160
+    },
+    "ENCHANTED_CHARCOAL": {
+        "COAL": 128,
+        "LOG": 32
+    },
+    "ENCHANTED_IRON": {
+        "IRON_INGOT": 160
+    },
+    "ENCHANTED_IRON_BLOCK": {
+        "ENCHANTED_IRON": 160
+    },
+    "ENCHANTED_GOLD": {
+        "GOLD_INGOT": 160
+    },
+    "ENCHANTED_GOLD_BLOCK": {
+        "ENCHANTED_GOLD": 160
+    },
+    "ENCHANTED_DIAMOND": {
+        "DIAMOND": 160
+    },
+    "ENCHANTED_DIAMOND_BLOCK": {
+        "ENCHANTED_DIAMOND": 160
+    },
+    "REFINED_DIAMOND": {
+        "ENCHANTED_DIAMOND_BLOCK": 2
+    },
+    "ENCHANTED_LAPIS_LAZULI": {
+        "INK_SACK:4": 160
+    },
+    "ENCHANTED_LAPIS_LAZULI_BLOCK": {
+        "ENCHANTED_LAPIS_LAZULI": 160
+    },
+    "FLAWED_JADE_GEM": {
+        "ROUGH_JADE_GEM": 80
+    },
+    "FINE_JADE_GEM": {
+        "FLAWED_JADE_GEM": 80
+    },
+    "FLAWLESS_JADE_GEM": {
+        "FINE_JADE_GEM": 80
+    },
+    "PERFECT_JADE_GEM": {
+        "FLAWLESS_JADE_GEM": 5
+    },
+    "FLAWED_AMBER_GEM": {
+        "ROUGH_AMBER_GEM": 80
+    },
+    "FINE_AMBER_GEM": {
+        "FLAWED_AMBER_GEM": 80
+    },
+    "FLAWLESS_AMBER_GEM": {
+        "FINE_AMBER_GEM": 80
+    },
+    "PERFECT_AMBER_GEM": {
+        "FLAWLESS_AMBER_GEM": 5
+    },
+    "FLAWED_TOPAZ_GEM": {
+        "ROUGH_TOPAZ_GEM": 80
+    },
+    "FINE_TOPAZ_GEM": {
+        "FLAWED_TOPAZ_GEM": 80
+    },
+    "FLAWLESS_TOPAZ_GEM": {
+        "FINE_TOPAZ_GEM": 80
+    },
+    "PERFECT_TOPAZ_GEM": {
+        "FLAWLESS_TOPAZ_GEM": 5
+    },
+    "FLAWED_SAPPHIRE_GEM": {
+        "ROUGH_SAPPHIRE_GEM": 80
+    },
+    "FINE_SAPPHIRE_GEM": {
+        "FLAWED_SAPPHIRE_GEM": 80
+    },
+    "FLAWLESS_SAPPHIRE_GEM": {
+        "FINE_SAPPHIRE_GEM": 80
+    },
+    "PERFECT_SAPPHIRE_GEM": {
+        "FLAWLESS_SAPPHIRE_GEM": 5
+    },
+    "FLAWED_AMETHYST_GEM": {
+        "ROUGH_AMETHYST_GEM": 80
+    },
+    "FINE_AMETHYST_GEM": {
+        "FLAWED_AMETHYST_GEM": 80
+    },
+    "FLAWLESS_AMETHYST_GEM": {
+        "FINE_AMETHYST_GEM": 80
+    },
+    "PERFECT_AMETHYST_GEM": {
+        "FLAWLESS_AMETHYST_GEM": 5
+    },
+    "FLAWED_JASPER_GEM": {
+        "ROUGH_JASPER_GEM": 80
+    },
+    "FINE_JASPER_GEM": {
+        "FLAWED_JASPER_GEM": 80
+    },
+    "FLAWLESS_JASPER_GEM": {
+        "FINE_JASPER_GEM": 80
+    },
+    "PERFECT_JASPER_GEM": {
+        "FLAWLESS_JASPER_GEM": 5
+    },
+    "FLAWED_RUBY_GEM": {
+        "ROUGH_RUBY_GEM": 80
+    },
+    "FINE_RUBY_GEM": {
+        "FLAWED_RUBY_GEM": 80
+    },
+    "FLAWLESS_RUBY_GEM": {
+        "FINE_RUBY_GEM": 80
+    },
+    "PERFECT_RUBY_GEM": {
+        "FLAWLESS_RUBY_GEM": 5
+    },
+    "FLAWED_OPAL_GEM": {
+        "ROUGH_OPAL_GEM": 80
+    },
+    "FINE_OPAL_GEM": {
+        "FLAWED_OPAL_GEM": 80
+    },
+    "FLAWLESS_OPAL_GEM": {
+        "FINE_OPAL_GEM": 80
+    },
+    "PERFECT_OPAL_GEM": {
+        "FLAWLESS_OPAL_GEM": 5
+    },
+    "FLAWED_ONYX_GEM": {
+        "ROUGH_ONYX_GEM": 80
+    },
+    "FINE_ONYX_GEM": {
+        "FLAWED_ONYX_GEM": 80
+    },
+    "FLAWLESS_ONYX_GEM": {
+        "FINE_ONYX_GEM": 80
+    },
+    "PERFECT_ONYX_GEM": {
+        "FLAWLESS_ONYX_GEM": 5
+    },
+     "FLAWED_AQUAMARINE_GEM": {
+        "ROUGH_AQUAMARINE_GEM": 80
+    },
+    "FINE_AQUAMARINE_GEM": {
+        "FLAWED_AQUAMARINE_GEM": 80
+    },
+    "FLAWLESS_AQUAMARINE_GEM": {
+        "FINE_AQUAMARINE_GEM": 80
+    },
+    "PERFECT_AQUAMARINE_GEM": {
+        "FLAWLESS_AQUAMARINE_GEM": 5
+    },
+    "FLAWED_CITRINE_GEM": {
+        "ROUGH_CITRINE_GEM": 80
+    },
+    "FINE_CITRINE_GEM": {
+        "FLAWED_CITRINE_GEM": 80
+    },
+    "FLAWLESS_CITRINE_GEM": {
+        "FINE_CITRINE_GEM": 80
+    },
+    "PERFECT_CITRINE_GEM": {
+        "FLAWLESS_CITRINE_GEM": 5
+    },
+    "FLAWED_PERIDOT_GEM": {
+        "ROUGH_PERIDOT_GEM": 80
+    },
+    "FINE_PERIDOT_GEM": {
+        "FLAWED_PERIDOT_GEM": 80
+    },
+    "FLAWLESS_PERIDOT_GEM": {
+        "FINE_PERIDOT_GEM": 80
+    },
+    "PERFECT_PERIDOT_GEM": {
+        "FLAWLESS_PERIDOT_GEM": 5
+    },
+    "ENCHANTED_EMERALD": {
+        "EMERALD": 160
+    },
+    "ENCHANTED_EMERALD_BLOCK": {
+        "ENCHANTED_EMERALD": 160
+    },
+    "ENCHANTED_REDSTONE": {
+        "REDSTONE": 160
+    },
+    "ENCHANTED_REDSTONE_BLOCK": {
+        "ENCHANTED_REDSTONE": 160
+    },
+    "ENCHANTED_QUARTZ": {
+        "QUARTZ": 160
+    },
+    "ENCHANTED_QUARTZ_BLOCK": {
+        "ENCHANTED_QUARTZ": 160
+    },
+    "ENCHANTED_OBSIDIAN": {
+        "OBSIDIAN": 160
+    },
+    "ENCHANTED_GLOWSTONE_DUST": {
+        "GLOWSTONE_DUST": 160
+    },
+    "ENCHANTED_GLOWSTONE": {
+        "ENCHANTED_GLOWSTONE_DUST": 192
+    },
+    "ENCHANTED_FLINT": {
+        "FLINT": 160
+    },
+    "ENCHANTED_HARD_STONE": {
+        "HARD_STONE": 576
+    },
+    "CONCENTRATED_STONE": {
+        "ENCHANTED_HARD_STONE": 576
+    },
+    "PACKED_ICE": {
+        "ICE": 9
+    },
+    "ENCHANTED_ICE": {
+        "ICE": 160
+    },
+    "ENCHANTED_PACKED_ICE": {
+        "ENCHANTED_ICE": 160
+    },
+    "ENCHANTED_NETHERRACK": {
+        "NETHERRACK": 160
+    },
+    "ENCHANTED_SAND": {
+        "SAND": 160
+    },
+    "ENCHANTED_RED_SAND": {
+        "SAND:1": 160
+    },
+    "ENCHANTED_RED_SAND_CUBE": {
+        "ENCHANTED_RED_SAND": 160
+    },
+    "ENCHANTED_ENDSTONE": {
+        "ENDER_STONE": 160
+    },
+    "SNOW_BLOCK": {
+        "SNOW_BALL": 4
+    },
+    "ENCHANTED_SNOW_BLOCK": {
+        "SNOW_BLOCK": 160
+    },
+    "ENCHANTED_MITHRIL": {
+        "MITHRIL_ORE": 160
+    },
+    "ENCHANTED_TITANIUM": {
+        "TITANIUM_ORE": 160
+    },
+    "REFINED_MITHRIL": {
+        "ENCHANTED_MITHRIL": 160
+    },
+    "REFINED_TITANIUM": {
+        "ENCHANTED_TITANIUM": 16
+    },
+    "ENCHANTED_SULPHUR": {
+        "SULPHUR_ORE": 160
+    },
+    "ENCHANTED_SULPHUR_CUBE": {
+        "ENCHANTED_SULPHUR": 160
+    },
+    "ENCHANTED_MYCELIUM": {
+        "MYCEL": 160
+    },
+    "ENCHANTED_MYCELIUM_CUBE": {
+        "ENCHANTED_MYCELIUM": 160
+    },
+    "FUEL_TANK": {
+        "ENCHANTED_COAL_BLOCK": 2
+    },
+    "BEJEWELED_HANDLE": {
+        "GLACITE_JEWEL": 3
+    },
+    "GEMSTONE_MIXTURE": {
+        "SLUDGE_JUICE": 320,
+        "FINE_AMBER_GEM": 4,
+        "FINE_SAPPHIRE_GEM": 4,
+        "FINE_JADE_GEM": 4,
+        "FINE_AMETHYST_GEM": 4
+    },
+    "MITHRIL_PLATE": {
+        "ENCHANTED_IRON_BLOCK": 1,
+        "REFINED_MITHRIL": 5,
+        "GOLDEN_PLATE": 1,
+        "REFINED_TITANIUM": 1
+    },
+    "DRILL_ENGINE": {
+        "GOLDEN_PLATE": 1,
+        "TREASURITE": 10,
+        "ENCHANTED_REDSTONE_BLOCK": 3,
+        "ENCHANTED_IRON_BLOCK": 1,
+        "REFINED_DIAMOND": 1
+    },
+    "GOLDEN_PLATE": {
+        "GLACITE_JEWEL": 5,
+        "ENCHANTED_GOLD_BLOCK": 2,
+        "REFINED_DIAMOND": 1
+    },
+    "ENCHANTED_ROTTEN_FLESH": {
+        "ROTTEN_FLESH": 160
+    },
+    "ENCHANTED_BONE": {
+        "BONE": 160
+    },
+    "ENCHANTED_BONE_BLOCK": {
+        "ENCHANTED_BONE": 160
+    },
+    "ENCHANTED_STRING": {
+        "STRING": 160
+    },
+    "ENCHANTED_SPIDER_EYE": {
+        "SPIDER_EYE": 160
+    },
+    "ENCHANTED_FERMENTED_SPIDER_EYE": {
+        "ENCHANTED_SPIDER_EYE": 64,
+        "SUGAR_CANE": 64,
+        "BROWN_MUSHROOM": 64
+    },
+    "ENCHANTED_GUNPOWDER": {
+        "SULPHUR": 160
+    },
+    "ENCHANTED_FIREWORK_ROCKET": {
+        "ENCHANTED_GUNPOWDER": 128,
+        "SUGAR_CANE": 16
+    },
+    "ENCHANTED_ENDER_PEARL": {
+        "ENDER_PEARL": 16
+    },
+    "ABSOLUTE_ENDER_PEARL": {
+        "ENCHANTED_ENDER_PEARL": 80
+    },
+    "TESSELLATED_ENDER_PEARL": {
+        "ABSOLUTE_ENDER_PEARL": 80,
+        "ENCHANTED_LAPIS_LAZULI_BLOCK": 32
+    },
+    "ENCHANTED_EYE_OF_ENDER": {
+        "ENCHANTED_ENDER_PEARL": 16,
+        "BLAZE_ROD": 32
+    },
+    "ENCHANTED_GHAST_TEAR": {
+        "GHAST_TEAR": 5
+    },
+    "ENCHANTED_SLIME_BALL": {
+        "SLIME_BALL": 160
+    },
+    "ENCHANTED_SLIME_BLOCK": {
+        "ENCHANTED_SLIME_BALL": 160
+    },
+    "ENCHANTED_MAGMA_CREAM": {
+        "MAGMA_CREAM": 160
+    },
+    "WHIPPED_MAGMA_CREAM": {
+        "ENCHANTED_MAGMA_CREAM": 160
+    },
+    "ENCHANTED_BLAZE_POWDER": {
+        "BLAZE_ROD": 160
+    },
+    "ENCHANTED_BLAZE_ROD": {
+        "ENCHANTED_BLAZE_POWDER": 160
+    },
+    "ENCHANTED_ANCIENT_CLAW": {
+        "ANCIENT_CLAW": 160
+    },
+    "REVENANT_VISCERA": {
+        "REVENANT_FLESH": 128,
+        "ENCHANTED_STRING": 32
+    },
+    "TARANTULA_SILK": {
+        "TARANTULA_WEB": 128,
+        "ENCHANTED_FLINT": 32
+    },
+    "GOLDEN_TOOTH": {
+        "WOLF_TOOTH": 128,
+        "ENCHANTED_GOLD": 32
+    },
+    "NULL_OVOID": {
+        "NULL_SPHERE": 128,
+        "ENCHANTED_OBSIDIAN": 32
+    },
+    "SOULFLOW": {
+        "RAW_SOULFLOW": 160
+    },
+    "BRAIDED_GRIFFIN_FEATHER": {
+        "SOUL_STRING": 256,
+        "GRIFFIN_FEATHER": 160
+    },
+    "NULL_BLADE": {
+        "NULL_OVOID": 64,
+        "ENCHANTED_QUARTZ_BLOCK": 64,
+        "NULL_EDGE": 3
+    },
+    "NULL_EDGE": {
+        "ENCHANTED_MITHRIL": 192,
+        "NULL_ATOM": 3
+    },
+    "AMALGAMATED_CRIMSONITE_NEW": {
+        "ENCHANTED_NETHER_STALK": 32,
+        "ENCHANTED_RED_SAND": 8,
+        "ENCHANTED_MAGMA_CREAM": 32,
+        "ENCHANTED_GLOWSTONE_DUST": 32,
+        "ENCHANTED_MYCELIUM": 8,
+        "ENCHANTED_BLAZE_POWDER": 32
+    },
+    "MOLTEN_POWDER": {
+        "DERELICT_ASHE": 128,
+        "AMALGAMATED_CRIMSONITE_NEW": 1
+    },
+    "STUFFED_CHILI_PEPPER": {
+        "CHILI_PEPPER": 160
+    },
+    "FUEL_GABAGOOL": {
+        "CRUDE_GABAGOOL": 24,
+        "SULPHURIC_COAL": 1
+    },
+    "HEAVY_GABAGOOL": {
+        "FUEL_GABAGOOL": 24,
+        "SULPHURIC_COAL": 1
+    },
+    "HYPERGOLIC_GABAGOOL": {
+        "HEAVY_GABAGOOL": 24,
+        "SULPHURIC_COAL": 1
+    },
+    "INFERNO_VERTEX": {
+        "HYPERGOLIC_IONIZED_CERAMICS": 6,
+        "MOLTEN_POWDER": 64
+    },
+    "INFERNO_APEX": {
+        "INFERNO_VERTEX": 64,
+        "MOLTEN_POWDER": 64,
+        "HYPERGOLIC_IONIZED_CERAMICS": 16
+    },
+    "SULPHURIC_COAL": {
+        "ENCHANTED_COAL": 16,
+        "ENCHANTED_SULPHUR": 1
+    },
+    "ENCHANTED_OAK_LOG": {
+        "LOG": 160
+    },
+    "ENCHANTED_SPRUCE_LOG": {
+        "LOG:1": 160
+    },
+    "ENCHANTED_BIRCH_LOG": {
+        "LOG:2": 160
+    },
+    "ENCHANTED_DARK_OAK_LOG": {
+        "LOG_2:1": 160
+    },
+    "ENCHANTED_ACACIA_LOG": {
+        "LOG_2": 160
+    },
+    "ENCHANTED_JUNGLE_LOG": {
+        "LOG:3": 160
+    },
+    "ENCHANTED_RAW_FISH": {
+        "RAW_FISH": 160
+    },
+    "ENCHANTED_COOKED_FISH": {
+        "ENCHANTED_RAW_FISH": 160
+    },
+    "ENCHANTED_RAW_SALMON": {
+        "RAW_FISH:1": 160
+    },
+    "ENCHANTED_COOKED_SALMON": {
+        "ENCHANTED_RAW_SALMON": 160
+    },
+    "ENCHANTED_CLOWNFISH": {
+        "RAW_FISH:2": 160
+    },
+    "ENCHANTED_PUFFERFISH": {
+        "RAW_FISH:3": 160
+    },
+    "ENCHANTED_PRISMARINE_SHARD": {
+        "PRISMARINE_SHARD": 160
+    },
+    "ENCHANTED_PRISMARINE_CRYSTALS": {
+        "PRISMARINE_CRYSTALS": 160
+    },
+    "ENCHANTED_CLAY_BALL": {
+        "CLAY_BALL": 160
+    },
+    "ENCHANTED_SPONGE": {
+        "SPONGE": 160
+    },
+    "ENCHANTED_WET_SPONGE": {
+        "ENCHANTED_SPONGE": 160
+    },
+    "CARROT_BAIT": {
+        "RAW_FISH": 1,
+        "CARROT_ITEM": 1
+    },
+    "MINNOW_BAIT": {
+        "RAW_FISH": 2
+    },
+    "FISH_BAIT": {
+        "RAW_FISH": 2,
+        "RAW_FISH:1": 1
+    },
+    "LIGHT_BAIT": {
+        "RAW_FISH": 1,
+        "PRISMARINE_CRYSTALS": 2
+    },
+    "DARK_BAIT": {
+        "RAW_FISH": 1,
+        "INK_SACK": 1
+    },
+    "SPOOKY_BAIT": {
+        "RAW_FISH": 1,
+        "PUMPKIN": 1
+    },
+    "SPIKED_BAIT": {
+        "RAW_FISH": 1,
+        "RAW_FISH:3": 1
+    },
+    "BLESSED_BAIT": {
+        "RAW_FISH": 1,
+        "PRISMARINE_CRYSTALS": 1,
+        "GOLD_INGOT": 9
+    },
+    "ICE_BAIT": {
+        "RAW_FISH": 1,
+        "ICE": 1
+    },
+    "WHALE_BAIT": {
+        "FISH_BAIT": 1,
+        "LIGHT_BAIT": 1,
+        "DARK_BAIT": 1,
+        "BLESSED_BAIT": 1
+    },
+    "SHARK_BAIT": {
+        "SHARK_FIN": 2
+    },
+    "ENCHANTED_SHARK_FIN": {
+        "SHARK_FIN": 160
+    },
+    "GREAT_WHITE_TOOTH_MEAL": {
+        "GREAT_WHITE_SHARK_TOOTH": 4,
+        "ENCHANTED_BONE": 1
+    },
+    "ENCHANTED_WATER_LILY": {
+        "WATER_LILY": 160
+    },
+    "ENCHANTED_INK_SACK": {
+        "INK_SACK": 80
+    },
+    "MAGMA_FISH_SILVER": {
+        "MAGMA_FISH": 80
+    },
+    "MAGMA_FISH_GOLD": {
+        "MAGMA_FISH_SILVER": 80
+    },
+    "MAGMA_FISH_DIAMOND": {
+        "MAGMA_FISH_GOLD": 80
+    },
+    "WATER_ORB": {
+        "ENCHANTED_RAW_FISH": 16,
+        "ENCHANTED_WATER_LILY": 8,
+        "ENCHANTED_RAW_SALMON": 16,
+        "ENCHANTED_PRISMARINE_CRYSTALS": 16,
+        "ENCHANTED_CLOWNFISH": 8,
+        "ENCHANTED_PUFFERFISH": 16,
+        "ENCHANTED_SPONGE": 4,
+        "DIVER_FRAGMENT": 1
+    },
+    "SPOOKY_WATER_ORB": {
+        "PURPLE_CANDY": 64,
+        "SOUL_FRAGMENT": 1,
+        "WEREWOLF_SKIN": 24,
+        "WATER_ORB": 1
+    },
+    "SHARK_WATER_ORB": {
+        "ENCHANTED_SHARK_FIN": 4,
+        "WATER_ORB": 1,
+        "GREAT_WHITE_SHARK_TOOTH": 1,
+        "TIGER_SHARK_TOOTH": 4,
+        "BLUE_SHARK_TOOTH": 6,
+        "NURSE_SHARK_TOOTH": 12
+    },
+    "WINTER_WATER_ORB": {
+        "WATER_ORB": 1,
+        "ICE_HUNK": 128,
+        "BLUE_ICE_HUNK": 32,
+        "ENCHANTED_SNOW_BLOCK": 64,
+        "WHITE_GIFT": 64,
+        "GREEN_GIFT": 16
+    },
+    "ENCHANTED_POPPY": {
+        "RED_ROSE": 576
+    },
+    "ENCHANTED_DANDELION": {
+        "YELLOW_FLOWER": 160
+    },
+    "HOT_POTATO_BOOK": {
+        "ENCHANTED_BAKED_POTATO": 1,
+        "SUGAR_CANE": 3
+    },
+    "JALAPENO_BOOK": {
+        "STUFFED_CHILI_PEPPER": 1,
+        "ENCHANTED_PAPER": 3
+    },
+    "SMALL_ENCHANTED_CHEST": {
+        "LOG": 64
+    },
+    "MEDIUM_ENCHANTED_CHEST": {
+        "SMALL_ENCHANTED_CHEST": 1,
+        "ENCHANTED_OAK_LOG": 8
+    },
+    "LARGE_ENCHANTED_CHEST": {
+        "MEDIUM_ENCHANTED_CHEST": 1,
+        "ENCHANTED_OAK_LOG": 256
+    },
+    "COMPACTOR": {
+        "ENCHANTED_REDSTONE": 1,
+        "ENCHANTED_COBBLESTONE": 7
+    },
+    "DWARVEN_COMPACTOR": {
+        "SUPER_COMPACTOR_3000": 1,
+        "AUTO_SMELTER": 1,
+        "ENCHANTED_MITHRIL": 56
+    },
+    "SUPER_COMPACTOR_3000": {
+        "ENCHANTED_COBBLESTONE": 448,
+        "ENCHANTED_REDSTONE_BLOCK": 1
+    },
+    "DIAMOND_SPREADING": {
+        "ENCHANTED_DIAMOND": 1,
+        "LEAVES:3": 40
+    },
+    "MINION_EXPANDER": {
+        "ENCHANTED_REDSTONE": 2,
+        "ENCHANTED_QUARTZ": 16
+    },
+    "AUTO_SMELTER": {
+        "COBBLESTONE": 64,
+        "COAL": 1
+    },
+    "SOULFLOW_ENGINE": {
+        "NULL_ATOM": 2,
+        "LESSER_SOULFLOW_ENGINE": 4,
+        "REFINED_TITANIUM": 12,
+        "NULL_OVOID": 64
+    },
+    "LESSER_SOULFLOW_ENGINE": {
+        "NULL_OVOID": 6,
+        "ENCHANTED_EYE_OF_ENDER": 48,
+        "ENCHANTED_IRON_BLOCK": 8
+    },
+    "BUDGET_HOPPER": {
+        "ENCHANTED_IRON": 5,
+        "LOG": 2
+    },
+    "ENCHANTED_HOPPER": {
+        "ENCHANTED_IRON_BLOCK": 5,
+        "LOG": 2
+    },
+    "MITHRIL_INFUSION": {
+        "ENCHANTED_MITHRIL": 512,
+        "PLASMA_BUCKET": 1
+    },
+    "FLYCATCHER_UPGRADE": {
+        "TARANTULA_SILK": 102,
+        "FLY_SWATTER": 1
+    },
+    "ENCHANTED_LAVA_BUCKET": {
+        "ENCHANTED_COAL_BLOCK": 2,
+        "ENCHANTED_IRON": 3
+    },
+    "POWER_CRYSTAL": {
+        "STARFALL": 256
+    },
+    "CATALYST": {
+        "ENDER_STONE": 8,
+        "CRYSTAL_FRAGMENT": 1
+    },
+    "SOLAR_PANEL": {
+        "SAND": 3,
+        "LOG": 1,
+        "ENCHANTED_QUARTZ": 192
+    },
+    "WOOD_SINGULARITY": {
+        "ENCHANTED_OAK_LOG": 320,
+        "ENCHANTED_SPRUCE_LOG": 320,
+        "ENCHANTED_BIRCH_LOG": 320,
+        "ENCHANTED_JUNGLE_LOG": 320,
+        "ENCHANTED_ACACIA_LOG": 320,
+        "ENCHANTED_DARK_OAK_LOG": 320,
+        "COINS": 1464000
+    },
+    "SIL_EX": {
+        "CONCENTRATED_STONE": 9
+    },
+    "EXP_BOTTLE": {
+        "INK_SACK:4": 6
+    },
+    "GRAND_EXP_BOTTLE": {
+        "ENCHANTED_LAPIS_LAZULI": 6
+    },
+    "TITANIC_EXP_BOTTLE": {
+        "ENCHANTED_LAPIS_LAZULI_BLOCK": 6
+    },
+    "HARDENED_WOOD": {
+        "COINS": 15000
+    },
+    "SIMPLE_CARROT_CANDY": {
+        "CARROT_ITEM": 576
+    },
+    "GREAT_CARROT_CANDY": {
+        "ENCHANTED_CARROT": 320,
+        "SIMPLE_CARROT_CANDY": 1
+    },
+    "SUPERB_CARROT_CANDY": {
+        "ENCHANTED_GOLDEN_CARROT": 24,
+        "GREAT_CARROT_CANDY": 1
+    },
+    "SALT_CUBE": {
+        "ICE_HUNK": 64
+    }
+}

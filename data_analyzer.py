@@ -1,4 +1,8 @@
 from apireader import APIReader
 
 class DataAnalyzer:
-    pass
+    def __init__(self, coins=0):
+        self.api_reader = APIReader()
+        self.coins = coins
+
+    

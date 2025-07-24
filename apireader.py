@@ -1,8 +1,14 @@
 import requests
 
-def getAPI():
-    resp = requests.get("https://api.hypixel.net/v2/skyblock/bazaar")
-    return resp.status_code
+class APIReader:
+    hypixel_api_url = r"https://api.hypixel.net/v2/skyblock/bazaar"
 
-if __name__ == "__main__":
-    print(getAPI())
+    def __init__(self):
+        self.response: requests.Response = None
+
+    def update_response(self) -> None:
+        self.response = requests.get(self.hypixel_api_url)
+
+    def get_json_response(self) -> dict:
+        if self.response:
+            return self.response.json()

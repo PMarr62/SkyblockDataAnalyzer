@@ -1,6 +1,6 @@
 """
-Modified codestub of creating a tkinter window with a table.
-Original code found from geeksforgeeks.com.
+Class to be responsible for creating the GUI of Skyblock Data Analyzer.
+Two screens are used: the main menu screen, and the flip screen.
 """
 
 from tkinter import ttk
@@ -12,6 +12,10 @@ class DataAnalyzerWindow:
         self.root.title("Skyblock Data Analyzer")
         self.root.geometry("500x300")
 
+        # instance variables for the table and loading bar for later access
+        self.treev: ttk.Treeview | None = None
+        self.loading_bar: ttk.Progressbar | None = None
+
         self.container = tk.Frame(self.root)
         self.container.pack(fill="both", expand=True)
 
@@ -19,10 +23,6 @@ class DataAnalyzerWindow:
 
         self.frames["main"] = self.create_main_window(self.container)
         self.frames["flip"] = self.create_flip_window(self.container)
-
-        # instance variables for the table and loading bar for later access
-        self.treev = None
-        self.loading_bar = None
 
         for frame in self.frames.values():
             frame.place(relwidth=1, relheight=1)
@@ -42,8 +42,17 @@ class DataAnalyzerWindow:
         label = tk.Label(frame, text="Welcome to Skyblock Data Analyzer!")
         label.pack(pady=20)
 
-        button = tk.Button(frame, text="Go to flips", command=lambda: self.show_frame("flip"))
-        button.pack()
+        button_frame = tk.Frame(frame)
+        button_frame.pack(fill="y", padx=5, pady=5)
+        craft_flip_button = tk.Button(button_frame, text="Craft Flips", command=lambda: self.show_frame("flip"))
+        craft_flip_button.pack(side="left", padx=5)
+        
+        # This is additional functionality that will be added soon.
+        single_flip_button = tk.Button(button_frame, text="Single Flips")
+        single_flip_button.pack(side="left", padx=5)
+
+        # button = tk.Button(frame, text="Go to flips", command=lambda: self.show_frame("flip"))
+        # button.pack()
 
         return frame
     
@@ -57,6 +66,7 @@ class DataAnalyzerWindow:
         back_button.pack(side="left", padx=5, pady=5)
 
         # currently no capability, will be a refresh for API data
+        # food for thought: the refresh button should be disabled when api data is loading.
         refresh_button = tk.Button(top_bar, text="↻")
         refresh_button.pack(side="right", padx=5, pady=5)
 
@@ -76,10 +86,16 @@ class DataAnalyzerWindow:
         self.treev.heading("1", text="Item name")
         self.treev.heading("2", text="Price")
         self.treev.heading("3", text="Profit")
-
-        self.treev.insert("", "end", values=("test name", 1000, 100))
-
         return frame
+    
+    # methods to update treev and loading bar outside of this class (perhaps in a tkinter window / analyzer combinatory class)
+    def insert_into_treev(self, item_name, price, profit) -> None:
+        if self.treev:
+            self.treev.insert("", "end", values=(item_name, price, profit))
+
+    def update_loading_bar(self, set_to_value: float) -> None:
+        if self.loading_bar:
+            self.loading_bar.step(set_to_value)
 
 if __name__ == "__main__":
     window = DataAnalyzerWindow()

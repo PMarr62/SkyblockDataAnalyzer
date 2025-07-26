@@ -10,7 +10,7 @@ class DataAnalyzerWindow:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Skyblock Data Analyzer")
-        self.root.geometry("500x300")
+        self.root.geometry("600x300")
 
         # instance variables for the table and loading bar for later access
         self.treev: ttk.Treeview | None = None
@@ -21,13 +21,13 @@ class DataAnalyzerWindow:
 
         self.frames = {}
 
-        self.frames["main"] = self.create_main_window(self.container)
+        # self.frames["main"] = self.create_main_window(self.container)
         self.frames["flip"] = self.create_flip_window(self.container)
 
         for frame in self.frames.values():
             frame.place(relwidth=1, relheight=1)
 
-        self.show_frame("main")
+        self.show_frame("flip")
 
     def show_frame(self, window_name: str):
         frame: tk.Frame = self.frames[window_name]
@@ -35,26 +35,6 @@ class DataAnalyzerWindow:
 
     def start(self):
         self.root.mainloop()
-
-    def create_main_window(self, parent) -> tk.Frame:
-        frame = tk.Frame(parent)
-    
-        label = tk.Label(frame, text="Welcome to Skyblock Data Analyzer!")
-        label.pack(pady=20)
-
-        button_frame = tk.Frame(frame)
-        button_frame.pack(fill="y", padx=5, pady=5)
-        craft_flip_button = tk.Button(button_frame, text="Craft Flips", command=lambda: self.show_frame("flip"))
-        craft_flip_button.pack(side="left", padx=5)
-        
-        # This is additional functionality that will be added soon.
-        single_flip_button = tk.Button(button_frame, text="Single Flips")
-        single_flip_button.pack(side="left", padx=5)
-
-        # button = tk.Button(frame, text="Go to flips", command=lambda: self.show_frame("flip"))
-        # button.pack()
-
-        return frame
     
     def create_flip_window(self, parent):
         frame = tk.Frame(parent)
@@ -62,8 +42,8 @@ class DataAnalyzerWindow:
         top_bar = tk.Frame(frame)
         top_bar.pack(fill="x", padx=5, pady=5)
         
-        back_button = tk.Button(top_bar, text="←", command=lambda: self.show_frame("main"))
-        back_button.pack(side="left", padx=5, pady=5)
+        # back_button = tk.Button(top_bar, text="←", command=lambda: self.show_frame("main"))
+        # back_button.pack(side="left", padx=5, pady=5)
 
         # currently no capability, will be a refresh for API data
         # food for thought: the refresh button should be disabled when api data is loading.
@@ -75,27 +55,56 @@ class DataAnalyzerWindow:
 
         self.treev = ttk.Treeview(frame, selectmode="browse")
         self.treev.pack(expand=True, fill="both")
-
-        self.treev["columns"] = ("1", "2", "3")
+        # Product name, total buy price, total sell price, number of items needed for craft, profit, profit margin?, time-to-wait (avg)
+        self.treev["columns"] = ("1", "2", "3", "4", "5", "6")
         self.treev["show"] = "headings"
 
         self.treev.column("1", anchor="center", width=100)
         self.treev.column("2", anchor="se", width=100)
         self.treev.column("3", anchor="se", width=100)
+        self.treev.column("4", anchor="se", width=100)
+        self.treev.column("5", anchor="se", width=100)
+        self.treev.column("6", anchor="se", width=100)
 
-        self.treev.heading("1", text="Item name")
-        self.treev.heading("2", text="Price")
-        self.treev.heading("3", text="Profit")
+        self.treev.heading("1", text="Product Name")
+        self.treev.heading("2", text="Total Buy Price")
+        self.treev.heading("3", text="Total Sell Price")
+        self.treev.heading("4", text="Profit")
+        self.treev.heading("5", text="Quantity")
+        self.treev.heading("6", text="Num. hours wait")
+
         return frame
     
     # methods to update treev and loading bar outside of this class (perhaps in a tkinter window / analyzer combinatory class)
-    def insert_into_treev(self, item_name, price, profit) -> None:
-        if self.treev:
-            self.treev.insert("", "end", values=(item_name, price, profit))
+    def insert_into_treev(self, compute_results) -> None:
+        if self.treev and len(compute_results) == 6:
+            self.treev.insert("", "end", values=tuple(compute_results))
 
     def update_loading_bar(self, set_to_value: float) -> None:
         if self.loading_bar:
             self.loading_bar.step(set_to_value)
+
+# -- to be used at a later date:
+
+    # def create_main_window(self, parent) -> tk.Frame:
+    #     frame = tk.Frame(parent)
+    
+    #     label = tk.Label(frame, text="Welcome to Skyblock Data Analyzer!")
+    #     label.pack(pady=20)
+
+    #     button_frame = tk.Frame(frame)
+    #     button_frame.pack(fill="y", padx=5, pady=5)
+    #     craft_flip_button = tk.Button(button_frame, text="Craft Flips", command=lambda: self.show_frame("flip"))
+    #     craft_flip_button.pack(side="left", padx=5)
+        
+    #     # This is additional functionality that will be added soon.
+    #     single_flip_button = tk.Button(button_frame, text="Single Flips")
+    #     single_flip_button.pack(side="left", padx=5)
+
+    #     # button = tk.Button(frame, text="Go to flips", command=lambda: self.show_frame("flip"))
+    #     # button.pack()
+
+    #     return frame
 
 if __name__ == "__main__":
     window = DataAnalyzerWindow()

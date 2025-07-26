@@ -18,4 +18,4 @@ Once the table has been returned, the user can place orders for the required ite
 
 # What kind of features can I expect?
 
-As of July 2025, this program is a command-line based program. I am looking into making an application version for easier accessibility and filtering results.
+As of July 2025, this program is built using Python's Tkinter library for a simple GUI. I am looking into adding filtering results (such as ignoring inflated results, enchanted books, etc).

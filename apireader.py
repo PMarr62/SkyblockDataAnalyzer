@@ -33,26 +33,23 @@ class APIReader:
     """
     Ensure the item exist. Once it does, first try to return the buy order price. If none, lookup from quick status.
     """
+
+    def _search_price(self, item_id: str, type_of_search: str):
+        valid_item_search = self._search_item_id(item_id)
+        if not valid_item_search:
+            return -1
+        top_order = valid_item_search.get(f"{type_of_search}_summary")[0].get("pricePerUnit")
+        if not top_order:
+            return valid_item_search.get("quick_status").get(f"{type_of_search}Price")
+        return top_order
     
-    def search_buy_order_price(self, item_id: str):
-        valid_item_search = self._search_item_id(item_id)
-        if not valid_item_search:
-            return None
-        top_buy_order = valid_item_search.get("sell_summary")[0].get("pricePerUnit")
-        if not top_buy_order:
-            return valid_item_search.get("quick_status").get("sellPrice")
-        return top_buy_order
+    def search_buy_order_price(self, item_id: str) -> int:
+        return self._search_price(item_id, "sell")
 
-    def search_sell_offer_price(self, item_id: str):
-        valid_item_search = self._search_item_id(item_id)
-        if not valid_item_search:
-            return None
-        top_sell_offer = valid_item_search.get("buy_summary")[0].get("pricePerUnit")
-        if not top_sell_offer:
-            return valid_item_search.get("quick_status").get("buyPrice")
-        return top_sell_offer
+    def search_sell_offer_price(self, item_id: str) -> int:
+        return self._search_price(item_id, "buy")
 
-    def search_quick_status(self, item_id: str):
+    def search_quick_status(self, item_id: str) -> dict:
         valid_item_search = self._search_item_id(item_id)
         if not valid_item_search:
             return {}

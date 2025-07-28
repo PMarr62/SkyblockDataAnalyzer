@@ -12,9 +12,12 @@ class DataAnalyzerWindow:
         self.root.title("Skyblock Data Analyzer")
         self.root.geometry("600x300")
 
-        # instance variables for the table and loading bar for later access
+        # instance variables for the table, coin input, refresh, and loading bar for future reference
         self.treev: ttk.Treeview | None = None
+        self.coin_input_box: ttk.Entry | None = None
+        self.refresh_button: tk.Button | None = None
         self.loading_bar: ttk.Progressbar | None = None
+        
 
         self.container = tk.Frame(self.root)
         self.container.pack(fill="both", expand=True)
@@ -41,14 +44,14 @@ class DataAnalyzerWindow:
 
         top_bar = tk.Frame(frame)
         top_bar.pack(fill="x", padx=5, pady=5)
-        
-        # back_button = tk.Button(top_bar, text="←", command=lambda: self.show_frame("main"))
-        # back_button.pack(side="left", padx=5, pady=5)
 
         # currently no capability, will be a refresh for API data
         # food for thought: the refresh button should be disabled when api data is loading.
-        refresh_button = tk.Button(top_bar, text="↻")
-        refresh_button.pack(side="right", padx=5, pady=5)
+        self.coin_input_box = ttk.Entry(top_bar, width=40)
+        self.coin_input_box.pack(side="left", padx=5, pady=5)
+
+        self.refresh_button = tk.Button(top_bar, text="→")
+        self.refresh_button.pack(side="right", padx=5, pady=5)
 
         self.loading_bar = ttk.Progressbar(frame)
         self.loading_bar.pack(fill="x", padx=10, pady=5)
@@ -72,7 +75,6 @@ class DataAnalyzerWindow:
         self.treev.heading("4", text="Profit")
         self.treev.heading("5", text="Quantity")
         self.treev.heading("6", text="Num. hours wait")
-
         return frame
     
     # methods to update treev and loading bar outside of this class (perhaps in a tkinter window / analyzer combinatory class)

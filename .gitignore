@@ -1,3 +1,4 @@
 .vscode/
 .myfiles/
 .venv/
+__pycache__/

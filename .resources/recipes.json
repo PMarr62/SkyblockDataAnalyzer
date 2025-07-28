@@ -8,11 +8,8 @@
     "HAY_BLOCK": {
         "WHEAT": 9
     },
-    "ENCHANTED_HAY_BLOCK": {
-        "HAY_BLOCK": 144
-    },
-    "TIGHTLY_TIED_HAY_BALE": {
-        "ENCHANTED_HAY_BLOCK": 144
+    "ENCHANTED_HAY_BALE": {
+        "ENCHANTED_WHEAT": 160
     },
     "ENCHANTED_SEEDS": {
         "SEEDS": 160

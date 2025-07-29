@@ -13,12 +13,11 @@ class DataAnalyzerWindow:
         self.root.geometry("600x300")
 
         # instance variables for the table, coin input, refresh, and loading bar for future reference
-        self.treev: ttk.Treeview | None = None
-        self.coin_input_box: ttk.Entry | None = None
-        self.refresh_button: tk.Button | None = None
-        self.loading_bar: ttk.Progressbar | None = None
+        self.treev: ttk.Treeview
+        self.coin_input_box: ttk.Entry
+        self.refresh_button: tk.Button
+        self.loading_bar: ttk.Progressbar
         
-
         self.container = tk.Frame(self.root)
         self.container.pack(fill="both", expand=True)
 
@@ -45,36 +44,34 @@ class DataAnalyzerWindow:
         top_bar = tk.Frame(frame)
         top_bar.pack(fill="x", padx=5, pady=5)
 
-        # currently no capability, will be a refresh for API data
-        # food for thought: the refresh button should be disabled when api data is loading.
-        self.coin_input_box = ttk.Entry(top_bar, width=40)
-        self.coin_input_box.pack(side="left", padx=5, pady=5)
+        coin_input_frame = tk.Frame(top_bar)
+        coin_input_frame.pack(side="left", padx=5, pady=5)
+
+        coin_label = tk.Label(coin_input_frame, text="Enter coin count:")
+        coin_label.pack(anchor="w")
+
+        self.coin_input_box = ttk.Entry(coin_input_frame, width=40)
+        self.coin_input_box.pack()
 
         self.refresh_button = tk.Button(top_bar, text="→")
         self.refresh_button.pack(side="right", padx=5, pady=5)
 
-        self.loading_bar = ttk.Progressbar(frame)
+        self.loading_bar = ttk.Progressbar(frame, mode="indeterminate")
         self.loading_bar.pack(fill="x", padx=10, pady=5)
 
         self.treev = ttk.Treeview(frame, selectmode="browse")
-        self.treev.pack(expand=True, fill="both")
+        self.treev.pack(expand=True, fill="both", padx=5, pady=5)
         # Product name, total buy price, total sell price, number of items needed for craft, profit, profit margin?, time-to-wait (avg)
-        self.treev["columns"] = ("1", "2", "3", "4", "5", "6")
+        num_columns = 6
+        column_names = ["Product Name", "Total Buy Price", "Total Sell Price", "Profit", "Quantity", "Num. hours wait"]
+
+        self.treev["columns"] = [str(i) for i in range(1, num_columns+1)]
         self.treev["show"] = "headings"
 
-        self.treev.column("1", anchor="center", width=100)
-        self.treev.column("2", anchor="se", width=100)
-        self.treev.column("3", anchor="se", width=100)
-        self.treev.column("4", anchor="se", width=100)
-        self.treev.column("5", anchor="se", width=100)
-        self.treev.column("6", anchor="se", width=100)
+        for i in range(len(self.treev["columns"])):
+            self.treev.column(self.treev["column"][i], anchor="center", width=100)
+            self.treev.heading(self.treev["column"][i], text=column_names[i])
 
-        self.treev.heading("1", text="Product Name")
-        self.treev.heading("2", text="Total Buy Price")
-        self.treev.heading("3", text="Total Sell Price")
-        self.treev.heading("4", text="Profit")
-        self.treev.heading("5", text="Quantity")
-        self.treev.heading("6", text="Num. hours wait")
         return frame
     
     # methods to update treev and loading bar outside of this class (perhaps in a tkinter window / analyzer combinatory class)
@@ -82,9 +79,34 @@ class DataAnalyzerWindow:
         if self.treev and len(compute_results) == 6:
             self.treev.insert("", "end", values=tuple(compute_results))
 
-    def update_loading_bar(self, set_to_value: float) -> None:
-        if self.loading_bar:
-            self.loading_bar.step(set_to_value)
+    def start_loading_bar(self) -> None:
+        self.loading_bar.start()
+
+    def stop_loading_bar(self) -> None:
+        self.loading_bar.stop()
+
+    def create_popup(self) -> None:
+        popup = tk.Toplevel(self.root)
+        popup.title("Skyblock Data Analyzer")
+        popup.transient(self.root)
+        popup.grab_set()
+
+        popup.geometry("300x100+{}+{}".format(self.root.winfo_x() + 100, self.root.winfo_y() + 100))
+        
+        popup_label = tk.Label(popup, text="Please enter a valid integer!")
+        popup_label.pack(padx=10, pady=10)
+
+        close_button = ttk.Button(popup, text="OK", command=popup.destroy)
+        close_button.pack(padx=10)
+
+        self.root.wait_window(popup)
+
+    def clear_treeview(self) -> None:
+        for element in self.treev.get_children():
+            self.treev.delete(element)
+
+        
+        
 
 # -- to be used at a later date:
 

@@ -33,10 +33,6 @@ class APIReader:
         return self.json_response.get(item_id)
     
     """
-    Ensure the item exist. Once it does, first try to return the buy order price. If none, lookup from quick status.
-    """
-
-    """
     Ensure the item exists. Then, ensure there is at least one buy order price. If not, return quick status. Ensure quick status is not 0.
     If it is, attempt to return sell offer price of original item. If not, return quick status. If nothing exists, return a bad value.
     """

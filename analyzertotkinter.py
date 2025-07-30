@@ -8,25 +8,36 @@ class DataAnalyzerController:
         self.data_analyzer = DataAnalyzer()
         self.data_analyzer.read_recipe_json(r".resources\recipes.json")
         self.data_analyzer_window = DataAnalyzerWindow()
-        self.data_analyzer_window.refresh_button.config(command=self.on_button_press)
+        self.data_analyzer_window.send_to_calculate_button.config(command=self.on_send_press)
         self.gui_queue = Queue()
         self.data_analyzer_window.root.bind("<<ProcessQueue>>", self.process_gui_queue)
+
+    # features to add:
+    # checkbox that ignores items that cannot be bought
+    # checkbox that ignores negative profit
+    # sorting by column on click
 
     def start_window(self):
         self.data_analyzer_window.start()
 
+    def load_results_in_treeview(self, results):
+        for profit in results:
+            self.gui_queue.put((self.data_analyzer_window.insert_into_treev, (profit, ), {}))
+        self.data_analyzer_window.root.event_generate("<<ProcessQueue>>", when="tail")
 
-    def on_button_press(self):
+
+    def on_send_press(self):
         coin_count: int
         try:
             coin_count = int(self.data_analyzer_window.coin_input_box.get())
             self.data_analyzer_window.clear_treeview()
-            self.data_analyzer_window.refresh_button.config(state="disabled")
-            results = self.data_analyzer.compute_profit(coin_count)
-            for profit in results:
-                self.gui_queue.put((self.data_analyzer_window.insert_into_treev, (profit, ), {}))
-            self.data_analyzer_window.root.event_generate("<<ProcessQueue>>", when="tail")
-            self.data_analyzer_window.refresh_button.config(state="normal")
+            self.data_analyzer_window.send_to_calculate_button.config(state="disabled")
+            # get checkbox info
+            ignore_expensive = self.data_analyzer_window.ignore_expensive_var.get()
+            ignore_negative = self.data_analyzer_window.ignore_negative_var.get()
+            results = self.data_analyzer.compute_profit(coin_count, ignore_expensive, ignore_negative)
+            self.load_results_in_treeview(results)
+            self.data_analyzer_window.send_to_calculate_button.config(state="normal")
         except ValueError:
             self.data_analyzer_window.create_popup()
 

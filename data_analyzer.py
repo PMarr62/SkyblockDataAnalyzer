@@ -10,7 +10,7 @@ class DataAnalyzer:
         return item_id.replace("_", " ").title()
     
     def _fix_float(self, value: float):
-        return f"{value:.1f}"
+        return f"{value:,.1f}"
 
     def read_recipe_json(self, recipe_path):
         with open(recipe_path, 'r') as f:
@@ -30,18 +30,20 @@ class DataAnalyzer:
                 wait_time += quantity / per_hour
         return wait_time
 
-    def compute_profit(self, coins):
+    def compute_profit(self, coins, no_expensive=False, no_negative=False):
         computed_results = []
         self.api_reader.update_response()
         if not self.api_reader.json_response:
             return computed_results
         # Product name, total buy price, total sell price, number of items needed for craft, profit, profit margin?, time-to-wait (avg)
         for item_to_be_crafted, recipe in self.recipes.items():
-
             cost_to_craft = self._compute_craft_cost(recipe)
             buy_wait_time = self._compute_wait_time(recipe, "sell")
 
             maximum_to_be_crafted = min(71680, int(coins / cost_to_craft))
+            if no_expensive and not maximum_to_be_crafted:
+                continue
+
             total_cost = cost_to_craft * maximum_to_be_crafted
             
             total_sell_price = self.api_reader.search_sell_offer_price(item_to_be_crafted) * maximum_to_be_crafted
@@ -49,10 +51,12 @@ class DataAnalyzer:
             item_to_be_crafted = item_to_be_crafted.replace("_", " ").title()
 
             total_profit = total_sell_price-total_cost
+            if no_negative and total_profit < 0:
+                continue
+
             total_wait_time = buy_wait_time+sell_wait_time
 
             item_to_be_crafted = self._fix_string(item_to_be_crafted)
-
             fixed_total_cost = self._fix_float(total_cost)
             fixed_total_sell_price = self._fix_float(total_sell_price)
             fixed_total_profit = self._fix_float(total_profit)

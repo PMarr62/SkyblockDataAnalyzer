@@ -18,4 +18,4 @@ Once the table has been returned, the user can place orders for the required ite
 
 # What kind of features can I expect?
 
-As of July 2025, this program is built using Python's Tkinter library for a simple GUI. I am looking into adding filtering results (such as ignoring inflated results, enchanted books, etc).
+As of July 2025, this program is built using Python's Tkinter library for a simple GUI. I am looking to adding a search functionality (to find item names quickly), QOL changes to the GUI (such as adapting to system-level light/dark mode), and sorting results by clicking column headers (and perhaps reversing the order when clicked again).

@@ -1,35 +1,101 @@
 from apireader import APIReader
-import json
+from apisearcher import APISearcher
+from resources.newrecipes import CRAFTING_RECIPES
+
 import pandas as pd
 import numpy as np
 
-"""
-NewDataAnalyzer will replace the original.
-We will work with the pandas library and use a dataframe object to store our final results.
-This will allow us to clean data effectively (removing data based on criteria),
-as well as sorting rows effectively based on specified columns.
-"""
+class NewDataCleaner:
+    def run_clean(self, df):
+        #Remove NAN rows
+        df.dropna(subset='Buy Price', inplace=True)
+
+        #Remove < 0 Rows
+        df.drop(df[df['Profit'] < 0].index, inplace=True)
+
+        #Converting capital underscore items to human-readable
+        df['Item Name'] = df['Item Name'].str.replace("_", " ").str.title()
+        #Converting coin-based columns to type int
+        coin_based_cols = ["Buy Price", "Sell Price", "Profit", "Leftover"]
+        for col in coin_based_cols:
+            df[col] = df[col].astype("int")
+
+        return df
+        
 
 
 class NewDataAnalyzer:
+    WEEKLY_MOVED = "MovingWeek"
+    PPU = "pricePerUnit"
+    BUY_ORDER = "sell"
+    SELL_OFFER = "buy"
+
+    COL_NAMES = ["Item Name", "Buy Price", "Sell Price", "Profit", "Leftover", "Buy Wait", "Sell Wait", "Total Wait"]
+
+    MAX_QUANTITY = 71680
+    HOURS_PER_WEEK = 168
     def __init__(self):
         self.api_reader: APIReader = APIReader()
-        self.recipes: dict = {}
+        self.api_searcher: APISearcher = APISearcher()
+        self.recipes: dict = CRAFTING_RECIPES
+
+    def link_read_search(self):
+        self.api_reader.update_response()
+        self.api_searcher.set_api(self.api_reader.json_response)
 
     def _compute_craft_cost(self, recipe):
         cost = 0
         for item, quantity in recipe.items():
-            cost += self.api_reader.search_buy_order_price(item) * quantity
+            # returns a df, we find the first price index and multiply it by quantity
+            valid_search = self.api_searcher.search_top_sell(item)
+            if valid_search is not None and len(valid_search) > 0:
+                cost += valid_search.loc[0, NewDataAnalyzer.PPU] * quantity
+        if cost == 0:
+            return np.nan
         return cost
+    
+    def _compute_wait_time(self, recipe, type_of_wait):
+        if type_of_wait not in ["buy", "sell"]:
+            return -1
+        wait_time = 0
+        for item, quantity in recipe.items():
+            quick_status = self.api_searcher.search_quick_status(item)
+            # quick status reports items sold/bought in a week, we convert to hourly.
+            items_per_week = quick_status.get(f"{type_of_wait}{NewDataAnalyzer.WEEKLY_MOVED}")
+            if items_per_week:
+                wait_time += (items_per_week * quantity) / NewDataAnalyzer.HOURS_PER_WEEK
+        return wait_time
+                
 
-    def compute_profit(self, coins):
+    def compute_profit(self, user_coins):
         computed_results = []
         self.api_reader.update_response()
         if not self.api_reader.json_response:
             return computed_results
+        
+        for result_item, info in self.recipes.items():
+            result_quantity = info.get("QUANTITY")
+            recipe = info.get("RECIPE")
 
-        for item, recipe in self.recipes.items():
-            pass
+            craft_cost = self._compute_craft_cost(recipe)
+            buy_wait_time = self._compute_wait_time(recipe, NewDataAnalyzer.BUY_ORDER)
+            craft_quantity = min(NewDataAnalyzer.MAX_QUANTITY,
+                           user_coins // craft_cost)
+            total_quantity = craft_quantity * result_quantity
+            
+            
+            craft_sell = self.api_searcher.search_top_sell(result_item).loc[0, NewDataAnalyzer.PPU] * total_quantity
+            sell_wait_time = self._compute_wait_time({result_item: total_quantity}, NewDataAnalyzer.SELL_OFFER)
+
+            profit = craft_sell - (craft_cost * craft_quantity)
+            total_wait_time = buy_wait_time + sell_wait_time
+
+            leftover = user_coins - profit
+
+            agg_info = [result_item, craft_cost*craft_quantity, craft_sell, profit, leftover, buy_wait_time, sell_wait_time, total_wait_time]
+            computed_results.append(agg_info)
+        return pd.DataFrame(computed_results, columns=NewDataAnalyzer.COL_NAMES)
+            
 
 class DataAnalyzer:
     def __init__(self):
@@ -97,9 +163,14 @@ class DataAnalyzer:
         return computed_results
 
 if __name__ == "__main__":
-    da = DataAnalyzer()
-    da.read_recipe_json(r".resources\recipes.json")
-    da.compute_profit(100_000_000)
+    # pd.set_option('display.max_rows', None)
+    nda = NewDataAnalyzer()
+    nda.link_read_search()
+    df = nda.compute_profit(100_000_000)
+    cleaner = NewDataCleaner()
+    cleaned_df = cleaner.run_clean(df)
+    print(cleaned_df)
+    
 
     
 

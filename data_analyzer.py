@@ -1,5 +1,35 @@
 from apireader import APIReader
 import json
+import pandas as pd
+import numpy as np
+
+"""
+NewDataAnalyzer will replace the original.
+We will work with the pandas library and use a dataframe object to store our final results.
+This will allow us to clean data effectively (removing data based on criteria),
+as well as sorting rows effectively based on specified columns.
+"""
+
+
+class NewDataAnalyzer:
+    def __init__(self):
+        self.api_reader: APIReader = APIReader()
+        self.recipes: dict = {}
+
+    def _compute_craft_cost(self, recipe):
+        cost = 0
+        for item, quantity in recipe.items():
+            cost += self.api_reader.search_buy_order_price(item) * quantity
+        return cost
+
+    def compute_profit(self, coins):
+        computed_results = []
+        self.api_reader.update_response()
+        if not self.api_reader.json_response:
+            return computed_results
+
+        for item, recipe in self.recipes.items():
+            pass
 
 class DataAnalyzer:
     def __init__(self):

@@ -6,7 +6,7 @@ from threading import Event, Thread
 class DataAnalyzerController:
     def __init__(self):
         self.data_analyzer = DataAnalyzer()
-        self.data_analyzer.read_recipe_json(r".resources\recipes.json")
+        self.data_analyzer.read_recipe_json(r"resources\recipes.json")
         self.data_analyzer_window = DataAnalyzerWindow()
         self.data_analyzer_window.send_to_calculate_button.config(command=self.on_send_press)
         self.gui_queue = Queue()

@@ -10,16 +10,23 @@ class NewDataCleaner:
         #Remove NAN rows
         df.dropna(subset='Buy Price', inplace=True)
 
-        #Remove < 0 Rows
-        df.drop(df[df['Profit'] < 0].index, inplace=True)
+        #Remove <= 0 Rows
+        df.drop(df[df['Profit'] <= 0].index, inplace=True)
 
         #Converting capital underscore items to human-readable
         df['Item Name'] = df['Item Name'].str.replace("_", " ").str.title()
         #Converting coin-based columns to type int
-        coin_based_cols = ["Buy Price", "Sell Price", "Profit", "Leftover"]
-        for col in coin_based_cols:
-            df[col] = df[col].astype("int")
+        int_based_cols = ["Buy Price", "Sell Price", "Quantity", "Profit", "Leftover"]
+        float_based_cols = ["Buy Wait", "Sell Wait", "Total Wait"]
 
+        
+        # formatting numbers with commas
+        for int_column in int_based_cols:
+            df[int_column] = df[int_column].astype('int') # convert to int
+            df[int_column] = df[int_column].astype('object')
+            df[int_column] = df[int_column].apply(lambda x: f"{x:,}")
+        for float_column in float_based_cols:
+            df[float_column] = df[float_column].apply(lambda x: f"{x:,.1f}")
         return df
         
 
@@ -30,7 +37,7 @@ class NewDataAnalyzer:
     BUY_ORDER = "sell"
     SELL_OFFER = "buy"
 
-    COL_NAMES = ["Item Name", "Buy Price", "Sell Price", "Profit", "Leftover", "Buy Wait", "Sell Wait", "Total Wait"]
+    COL_NAMES = ["Item Name", "Buy Price", "Sell Price", "Quantity", "Profit", "Leftover", "Buy Wait", "Sell Wait", "Total Wait"]
 
     MAX_QUANTITY = 71680
     HOURS_PER_WEEK = 168
@@ -60,12 +67,12 @@ class NewDataAnalyzer:
         wait_time = 0
         for item, quantity in recipe.items():
             quick_status = self.api_searcher.search_quick_status(item)
-            # quick status reports items sold/bought in a week, we convert to hourly.
+                    # quick status reports items sold/bought in a week, we convert to hourly.
             items_per_week = quick_status.get(f"{type_of_wait}{NewDataAnalyzer.WEEKLY_MOVED}")
             if items_per_week:
-                wait_time += (items_per_week * quantity) / NewDataAnalyzer.HOURS_PER_WEEK
+                wait_time += (quantity * NewDataAnalyzer.HOURS_PER_WEEK) / items_per_week
         return wait_time
-                
+
 
     def compute_profit(self, user_coins):
         computed_results = []
@@ -82,17 +89,18 @@ class NewDataAnalyzer:
             craft_quantity = min(NewDataAnalyzer.MAX_QUANTITY,
                            user_coins // craft_cost)
             total_quantity = craft_quantity * result_quantity
+            buy_cost = craft_cost*craft_quantity
             
             
             craft_sell = self.api_searcher.search_top_sell(result_item).loc[0, NewDataAnalyzer.PPU] * total_quantity
             sell_wait_time = self._compute_wait_time({result_item: total_quantity}, NewDataAnalyzer.SELL_OFFER)
 
-            profit = craft_sell - (craft_cost * craft_quantity)
+            profit = craft_sell - buy_cost
             total_wait_time = buy_wait_time + sell_wait_time
 
-            leftover = user_coins - profit
+            leftover = user_coins - buy_cost
 
-            agg_info = [result_item, craft_cost*craft_quantity, craft_sell, profit, leftover, buy_wait_time, sell_wait_time, total_wait_time]
+            agg_info = [result_item, buy_cost, craft_sell, craft_quantity, profit, leftover, buy_wait_time, sell_wait_time, total_wait_time]
             computed_results.append(agg_info)
         return pd.DataFrame(computed_results, columns=NewDataAnalyzer.COL_NAMES)
             

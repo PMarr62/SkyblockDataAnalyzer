@@ -3,6 +3,77 @@ from tkinterwindow import DataAnalyzerWindow
 from queue import Queue, Empty
 from threading import Event, Thread
 
+from resources.newrecipes import CRAFTING_RECIPES
+from apiwindow import APIWindow
+from data_analyzer import NewDataAnalyzer, NewDataCleaner
+import pandas as pd
+import numpy as np
+from typing import Callable
+from thefuzz import process
+
+class NewDataAnalyzerController:
+    def __init__(self):
+        self.data_analyzer = NewDataAnalyzer()
+        self.data_cleaner = NewDataCleaner()
+        self.data_analyzer.link_read_search() # updates api and allows for search
+        self.window = APIWindow()
+        self.df: pd.DataFrame
+
+        self.window.coin_input_btn.config(command=lambda: self._button_threading(self._on_coin_input_btn))
+        self.window.search_btn.config(command=lambda: self._button_threading(self._on_search_btn))
+        self.window.exit_search_btn.config(command=lambda: self._button_threading(self._on_exit_search_btn))
+
+    def start(self):
+        self.window.start()
+
+    def populate_treeview(self, dataframe: pd.DataFrame):
+        for row in dataframe.itertuples():
+            self.window.set_row_in_treeview(row)
+
+    def _button_threading(self, work_func: Callable):
+        thread = Thread(target=work_func)
+        thread.start()
+
+    def _on_coin_input_btn(self):
+        # get coin count.
+        coin_count: int
+        try:
+            coin_count = int(self.window.coin_input_var.get())    
+            self.window.clear_treeview()
+            self.window.coin_input_btn.config(state="disabled")
+            result_df = self.data_analyzer.compute_profit(coin_count)
+            self.df = self.data_cleaner.run_clean(result_df)
+            self.populate_treeview(self.df)
+            self.window.coin_input_btn.config(state="normal")
+        except ValueError:
+            self.window.create_popup(self.window.ERROR_COIN_INPUT)
+
+    def _on_search_btn(self):
+        try:
+            search_query = self.window.search_var.get()
+            threshold_match = 80 # match to return a row
+            choices = self.df['Item Name']
+            matches = process.extract(search_query, choices, limit=len(choices))
+            self.window.exit_search_btn.pack(side="right") #enables exit button
+            to_show = []
+            for match in matches:
+                if match[1] >= threshold_match:
+                    # appends the row at index match[2]
+                    to_show.append(self.df.loc[match[2]])
+            searched_df = pd.DataFrame(to_show, columns=NewDataAnalyzer.COL_NAMES)
+            self.window.clear_treeview()
+            self.populate_treeview(searched_df)
+        except AttributeError:
+            self.window.create_popup(self.window.INVALID_SEARCH_INPUT)
+
+        
+
+    def _on_exit_search_btn(self):
+        self.window.exit_search_btn.forget()
+        self.window.clear_treeview()
+        self.populate_treeview(self.df)
+        
+
 class DataAnalyzerController:
     def __init__(self):
         self.data_analyzer = DataAnalyzer()
@@ -56,6 +127,6 @@ class DataAnalyzerController:
             pass
 
 if __name__ == "__main__":
-    dac = DataAnalyzerController()
-    dac.start_window()
+    dac = NewDataAnalyzerController()
+    dac.start()
     # dac.compute_profits()

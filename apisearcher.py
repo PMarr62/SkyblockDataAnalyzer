@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 class APISearcher:
     SELL = "sell_summary"
@@ -7,6 +8,8 @@ class APISearcher:
 
     VALUE_ERRORMSG = "Count argument must be at least 1."
     SUBMTD_ERRORMSG = "Submethod invalid or not specified. Use BUY/SELL."
+
+    DEFAULT_SEARCH = {"amount": np.nan, "pricePerUnit": np.nan, "orders": np.nan}
 
     def __init__(self, api={}):
         self.set_api(api)
@@ -35,6 +38,9 @@ class APISearcher:
 
         for i in range(count):
             stored_results.append(search_result[i])
+        if count == 0:
+            # fills blanks df with default values
+            stored_results.append(APISearcher.DEFAULT_SEARCH)
         return pd.DataFrame(stored_results)
     
     def search_top_buy(self, item_id, count=1):

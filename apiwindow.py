@@ -88,7 +88,7 @@ class APIWindow(tk.Tk):
         self.treeview["show"] = "headings"
         
         for col in NewDataAnalyzer.COL_NAMES:
-            self.treeview.column(col, anchor="center", width=100)
+            self.treeview.column(col, anchor="center", width=100, minwidth=50)
             self.treeview.heading(col, text=col)
 
 

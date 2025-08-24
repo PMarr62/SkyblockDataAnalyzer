@@ -2,7 +2,7 @@
 
 **Skyblock Data Analyzer** is a program that interprets the Hypixel Skyblock API and finds profitable craft-flips.
 
-**Status:** In active development (as of July 2025). Once the program is completed, it may be used by others through cloning this repository.
+**Status:** In active development (as of August 2025). Once the program is completed, it may be used by others through cloning this repository.
 
 # How does this program work?
 
@@ -18,4 +18,4 @@ Once the table has been returned, the user can place orders for the required ite
 
 # What kind of features can I expect?
 
-As of July 2025, this program is built using Python's Tkinter library for a simple GUI. I am looking to adding a search functionality (to find item names quickly), QOL changes to the GUI (such as adapting to system-level light/dark mode), and sorting results by clicking column headers (and perhaps reversing the order when clicked again).
+As of August 2025, this application is being built using Python's Tkinter library. Features to expect on release are searching for items in the table, exporting profit data, light/dark mode, sorting by columns on header click.

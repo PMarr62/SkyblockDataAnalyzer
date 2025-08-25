@@ -1,5 +1,14 @@
-def test():
-    print("Hello GitHub! This is a test main file.")
+"""
+This is the main file for SkyblockDataAnalyzer.
+"""
+
+from apiwindow import APIWindow
+from analyzertotkinter import NewDataAnalyzerController
+from data_analyzer import NewDataAnalyzer, NewDataCleaner
+
+def main():
+    pass
 
 if __name__ == "__main__":
-    test()
+    api_window = APIWindow()
+

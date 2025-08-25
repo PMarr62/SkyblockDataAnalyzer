@@ -3,17 +3,23 @@ import tkinter as tk
 
 from data_analyzer import NewDataAnalyzer
 import pandas as pd
+from typing import Callable
+
+import webbrowser
 
 """
-With a menubar, we can introduce options such as:
-File -> Export data as csv, xlsx, etc.
-View -> Set theme (light/dark), reset column width, etc.
+TODO:
+* Consider ensuring popups adhere to light/dark mode.
+* Ensure program is runnable from main
+* Remove/Rename Old/New Classes
+* Remove files unneeded
+* Rewrite README for release
+* Update requirements.txt
 
-todo:
-1) Add sorting functionality by column click (or in menubar)
-2) Add functionality to exporting data and setting a theme, resetting column
-3) Add a help function that goes to a to-be FAQ on github.
-
+* Structurally:
+* Ensure classes are neat
+* Ensure all classes are separated by its own file
+* Ensure all classes and methods are documented
 """
 
 class APIWindow(tk.Tk):
@@ -24,6 +30,12 @@ class APIWindow(tk.Tk):
 
     ERROR_COIN_INPUT = "Please enter a valid integer!"
     INVALID_SEARCH_INPUT = "Please fetch prices before searching!"
+    EXPORT_ERROR = "Please fetch prices before exporting!"
+
+    TREEVIEW_STYLE = "Treeview"
+    ENTRY_STYLE = "TEntry"
+
+    GITHUB_REPO_URL = "https://github.com/PMarr62/SkyblockDataAnalyzer"
 
     def __init__(self):
         super().__init__()
@@ -42,16 +54,85 @@ class APIWindow(tk.Tk):
 
         # Menu Bar
         self.menubar: tk.Menu
+        # self.file_menubar: tk.Menu # used in the export process
 
         # Text Tracking
         self.coin_input_var = tk.StringVar()
         self.search_var = tk.StringVar()
+
+        # Styling
+        self.style = ttk.Style()
+        self.style.theme_use("alt")
+        self.style.configure(APIWindow.TREEVIEW_STYLE, fieldbackground="white", foreground="black", background="white")
+        self.style.configure(APIWindow.ENTRY_STYLE, foreground="black", background="white")
+        self.active_is_light = True
 
         # Window setup
         self.create_window()
 
     def start(self):
         self.mainloop()
+
+    def reset_col_width(self):
+        for col in NewDataAnalyzer.COL_NAMES:
+            self.treeview.column(col, width=75, minwidth=50)
+
+
+    def setup_menu_bar(self, export_comm: Callable):
+        self.menubar = tk.Menu(self)
+        self.config(menu=self.menubar)
+        file_menubar = tk.Menu(self.menubar, tearoff=0)
+        view_menubar = tk.Menu(self.menubar, tearoff=0)
+        help_menubar = tk.Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label="File", menu=file_menubar)
+        self.menubar.add_cascade(label="View", menu=view_menubar)
+        self.menubar.add_cascade(label="Help", menu=help_menubar)
+
+        set_theme = tk.Menu(view_menubar, tearoff=0)
+        view_menubar.add_cascade(label="Set theme...", menu=set_theme)
+        view_menubar.add_command(label="Reset column width", command=self.reset_col_width)
+        set_theme.add_command(label="Light mode", command=self.set_light_mode)
+        set_theme.add_command(label="Dark mode", command=self.set_dark_mode)
+        
+        file_menubar.add_command(label="Export data to csv...", command=export_comm)
+        file_menubar.add_separator()
+        file_menubar.add_command(label="Exit", command=self.destroy)
+
+        help_menubar.add_command(label="Go to GitHub repository...", command=lambda:webbrowser.open(APIWindow.GITHUB_REPO_URL))
+
+    def set_light_mode(self):
+        if not self.active_is_light:
+            self._set_frames(self, "white")
+            self._set_treeview("white", "black", "white")
+            self._set_entries("white", "black")
+            self._set_buttons("black", "white")
+            self.active_is_light = True
+
+    def set_dark_mode(self):
+        if self.active_is_light:
+            self._set_frames(self, "gray10")
+            self._set_treeview("gray10", "white", "gray10")
+            self._set_entries("gray20", "white")
+            self._set_buttons("white", "gray20")
+            self.active_is_light = False
+
+    def _set_frames(self, widget, bg_color):
+        if isinstance(widget, tk.Frame):
+            widget.configure(background=bg_color)
+        for child in widget.winfo_children():
+            self._set_frames(child, bg_color)
+
+    def _set_treeview(self, fieldbg, fg, bg):
+        self.style.configure(APIWindow.TREEVIEW_STYLE, fieldbackground=fieldbg, foreground=fg, background=bg)
+
+    def _set_entries(self, fieldbg, fg):
+        self.style.configure(APIWindow.ENTRY_STYLE, fieldbackground=fieldbg, foreground=fg)
+
+    def _set_buttons(self, fg, bg):
+        # we have to set buttons individually (tk objects, not a ttk object)
+        self.coin_input_btn.config(foreground=fg, background=bg)
+        self.search_btn.config(foreground=fg, background=bg)
+        self.exit_search_btn.config(foreground=fg, background=bg)
 
     def entry_focus_in(self, event, hint: str, input_box: ttk.Entry):
         if input_box.get() == hint:
@@ -61,8 +142,8 @@ class APIWindow(tk.Tk):
         if input_box.get() == "":
             input_box.insert(0, hint)
 
-    def set_row_in_treeview(self, row: pd.Series):
-        elements = list(row)[1:] #truncates index column
+    def set_row_in_treeview(self, row: pd.Series) -> None:
+        elements = list(row) #truncates index column
         self.treeview.insert("", "end", values=elements)
             
     def clear_treeview(self):
@@ -86,7 +167,7 @@ class APIWindow(tk.Tk):
 
         popup_window.geometry(f"{popup_width}x{popup_height}+{popup_x}+{popup_y}".format(screen_width, screen_height))
 
-        popup_message = tk.Label(popup_window, text=message)
+        popup_message = tk.Label(popup_window, text=message, wraplength=280, justify="left")
         popup_message.pack(padx=10, pady=10)
 
         close_button = ttk.Button(popup_window, text="OK", command=popup_window.destroy)
@@ -112,12 +193,15 @@ class APIWindow(tk.Tk):
         treeview_frame.pack(fill="both", expand=True)
 
         # create widgets
-        self.treeview = ttk.Treeview(treeview_frame, selectmode="browse")
-        self.coin_input_box = ttk.Entry(upper_left_frame, textvariable=self.coin_input_var) 
+        self.treeview = ttk.Treeview(treeview_frame, selectmode="browse", style=APIWindow.TREEVIEW_STYLE)
+        self.coin_input_box = ttk.Entry(upper_left_frame, textvariable=self.coin_input_var, style=APIWindow.ENTRY_STYLE) 
         self.coin_input_btn = tk.Button(upper_left_frame, text="→")
-        self.search_box = ttk.Entry(upper_right_frame, textvariable=self.search_var)
+        self.search_box = ttk.Entry(upper_right_frame, textvariable=self.search_var, style=APIWindow.ENTRY_STYLE)
         self.search_btn = tk.Button(upper_right_frame, text="→")
         self.exit_search_btn = tk.Button(upper_right_frame, text="X")
+
+        # before packing, we toggle light mode (default)
+        self.set_light_mode()
 
         # pack widgets
         self.coin_input_box.pack(side="left")
@@ -143,23 +227,6 @@ class APIWindow(tk.Tk):
         for col in NewDataAnalyzer.COL_NAMES:
             self.treeview.column(col, anchor="center", width=75, minwidth=50)
             self.treeview.heading(col, text=col)
-
-        # setup menubar
-        self.menubar = tk.Menu(self)
-        self.config(menu=self.menubar)
-
-        file_menubar = tk.Menu(self.menubar, tearoff=False)
-        view_menubar = tk.Menu(self.menubar, tearoff=False)
-
-        self.menubar.add_cascade(label="File", menu=file_menubar,)
-        self.menubar.add_cascade(label="View", menu=view_menubar)
-
-        file_menubar.add_command(label="Export data as...")
-        file_menubar.add_separator()
-        file_menubar.add_command(label="Exit", command=self.destroy)
-
-        view_menubar.add_command(label="Set theme...")
-        view_menubar.add_command(label="Reset column width")
 
 
 if __name__ == "__main__":

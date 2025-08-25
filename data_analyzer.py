@@ -6,7 +6,26 @@ import pandas as pd
 import numpy as np
 
 class NewDataCleaner:
-    def run_clean(self, df):
+    STRING_COLS = ["Item Name"]
+    INT_COLS = ["Buy Price", "Sell Price", "Quantity", "Profit", "Leftover"]
+    FLOAT_COLS = ["Buy Wait", "Sell Wait", "Total Wait"]
+
+    def format_int_column(self, col: str, df: pd.DataFrame) -> pd.DataFrame:
+        if col not in NewDataCleaner.INT_COLS:
+            return df
+        df[col] = df[col].astype('int') # convert to int
+        df[col] = df[col].astype('object')
+        df[col] = df[col].apply(lambda x: f"{x:,}")
+        return df
+    
+    def format_float_column(self, col: str, df: pd.DataFrame) -> pd.DataFrame:
+        if col not in NewDataCleaner.FLOAT_COLS:
+            return df
+        df[col] = df[col].apply(lambda x: f"{x:,.1f}")
+        return df
+
+
+    def run_clean(self, df: pd.DataFrame) -> pd.DataFrame:
         #Remove NAN rows
         df.dropna(subset='Buy Price', inplace=True)
 
@@ -15,18 +34,11 @@ class NewDataCleaner:
 
         #Converting capital underscore items to human-readable
         df['Item Name'] = df['Item Name'].str.replace("_", " ").str.title()
-        #Converting coin-based columns to type int
-        int_based_cols = ["Buy Price", "Sell Price", "Quantity", "Profit", "Leftover"]
-        float_based_cols = ["Buy Wait", "Sell Wait", "Total Wait"]
-
         
-        # formatting numbers with commas
-        for int_column in int_based_cols:
-            df[int_column] = df[int_column].astype('int') # convert to int
-            df[int_column] = df[int_column].astype('object')
-            df[int_column] = df[int_column].apply(lambda x: f"{x:,}")
-        for float_column in float_based_cols:
-            df[float_column] = df[float_column].apply(lambda x: f"{x:,.1f}")
+        for int_column in NewDataCleaner.INT_COLS:
+            df = self.format_int_column(int_column, df)
+        for float_column in NewDataCleaner.FLOAT_COLS:
+            df = self.format_float_column(float_column, df)
         return df
         
 
@@ -74,11 +86,11 @@ class NewDataAnalyzer:
         return wait_time
 
 
-    def compute_profit(self, user_coins):
+    def compute_profit(self, user_coins: int) -> pd.DataFrame:
         computed_results = []
         self.api_reader.update_response()
         if not self.api_reader.json_response:
-            return computed_results
+            return pd.DataFrame()
         
         for result_item, info in self.recipes.items():
             result_quantity = info.get("QUANTITY")

@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 
+from apireader import APIReader
+
 class APISearcher:
     SELL = "sell_summary"
     BUY = "buy_summary"
@@ -8,20 +10,24 @@ class APISearcher:
 
     VALUE_ERRORMSG = "Count argument must be at least 1."
     SUBMTD_ERRORMSG = "Submethod invalid or not specified. Use BUY/SELL."
-
+    
     DEFAULT_SEARCH = {"amount": np.nan, "pricePerUnit": np.nan, "orders": np.nan}
 
-    def __init__(self, api={}):
-        self.set_api(api)
+    def __init__(self, api_reader: APIReader):
+        self.set_api_reader(api_reader)
 
-    def set_api(self, api: dict):
-        self.api = api
+    def set_api_reader(self, api_reader: APIReader):
+        self.api_reader = api_reader
 
     # returns entire subdictionary related to a specific item
     def _search_by_id(self, item_id):
-        return self.api.get(item_id)
+        if self.api_reader.okay():
+            return self.api_reader.json_response.get(item_id)
+        return {}
     
     def _search_top_n(self, item_id, submethod="", count=1):
+        if not self.api_reader.okay():
+            return APISearcher.DEFAULT_SEARCH
         if submethod not in [APISearcher.SELL, APISearcher.BUY]:
             raise ValueError(APISearcher.SUBMTD_ERRORMSG)
         if count < 1:

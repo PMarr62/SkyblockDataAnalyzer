@@ -14,6 +14,7 @@ from typing import Callable
 from thefuzz import process
 
 class DataAnalyzerController:
+
     def __init__(self, data_cleaner: DataCleaner, data_analyzer: DataAnalyzer, window: APIWindow):
         self.data_cleaner = data_cleaner
         self.data_analyzer = data_analyzer
@@ -23,12 +24,17 @@ class DataAnalyzerController:
         self.active_df = pd.DataFrame()
         self.inactive_df = pd.DataFrame()
         self.sort_bool = False
+        self.is_searching = False
 
         # command configs to tkinter widgets
         self.window.coin_input_btn.config(command=lambda: self._button_threading(self._on_coin_input_btn))
         self.window.search_btn.config(command=lambda: self._button_threading(self._on_search_btn))
         self.window.exit_search_btn.config(command=lambda: self._button_threading(self._on_exit_search_btn))
         self.window.treeview.bind("<Button-1>", self._on_treeview_click)
+
+        # monitors when boxes are typed into (dealing with placeholder text)
+        self.window.coin_input_box.bind("<Key>", self._on_type_coin_input_box)
+        self.window.search_box.bind("<Key>", self._on_type_search_box)
 
     def start(self):
         # we setup the menubar outside of apiwindow since we need dataframe data to export.
@@ -40,43 +46,73 @@ class DataAnalyzerController:
         # get coin count.
         coin_count: int
         try:
+            # We should exit search before searching.
+            if self.is_searching:
+                self._on_exit_before_clear()
+            self._disable_while_querying()
             coin_count = int(self.window.coin_input_var.get())
             self.window.clear_treeview()
-            self.window.coin_input_btn.config(state="disabled")
             result_df = self.data_analyzer.compute_profit(coin_count)
             self.active_df = self.data_cleaner.run_clean(result_df)
             self._populate_treeview(self.active_df)
-        except ValueError as e:
-            print(e)
+        except ValueError:
             self.window.create_popup(self.window.ERROR_COIN_INPUT)
-        self.window.coin_input_btn.config(state="normal") # update button
+        finally:
+            self._enable_after_querying()
+
+    def _disable_while_querying(self):
+        self.window.coin_input_btn.config(state="disabled")
+        self.window.coin_input_box.state(["readonly"])
+
+        self.window.search_btn.config(state="disabled")
+        self.window.search_box.state(["readonly"])
+
+    def _enable_after_querying(self):
+        self.window.coin_input_btn.config(state="normal")
+        self.window.coin_input_box.state(["!readonly"])
+
+        self.window.search_btn.config(state="normal")
+        self.window.search_box.state(["!readonly"])
 
     def _on_search_btn(self):
-        try:
-            search_query = self.window.search_var.get()
-            threshold_match = 80 # match to return a row
-            choices = self.active_df['Item Name']
-            matches = process.extract(search_query, choices, limit=len(choices))
-            self.window.exit_search_btn.pack(side="right") #enables exit button
-            to_show = []
-            for match in matches:
-                if match[1] >= threshold_match:
-                    # appends the row at index match[2]
-                    to_show.append(self.active_df.loc[match[2]])
-            self.inactive_df = pd.DataFrame(to_show, columns=DataAnalyzer.COL_NAMES)
-            self.window.clear_treeview()
-            self._swap_dataframes()
-            self._populate_treeview(self.active_df)
-        except AttributeError:
+        if self.active_df.empty and not self.is_searching:
             self.window.create_popup(self.window.INVALID_SEARCH_INPUT)
+            return
+        search_query = self.window.search_var.get()
+        if len(search_query.strip()) == 0:
+            self.window.create_popup(self.window.SPACES_IN_SEARCH_INPUT)
+            return
+        if not self.is_searching:
+            self.is_searching = True
+            self._swap_dataframes() # swaps active and inactive
+        threshold_match = 80 # match to return a row
+        choices = self.inactive_df['Item Name']
+        matches = process.extract(search_query, choices, limit=len(choices))
+        # without this check, timing errors cause two buttons to periodically appear.
+        if not self.window.exit_search_btn.winfo_ismapped():
+            self.window.exit_search_btn.pack(side="right")
+        to_show = []
+        for match in matches:
+            if match[1] >= threshold_match:
+                # appends the row index stored at match[2]
+                to_show.append(self.inactive_df.loc[match[2]])
+        self.active_df = pd.DataFrame(to_show, columns=DataAnalyzer.COL_NAMES)
+        self.window.clear_treeview()
+        self._populate_treeview(self.active_df)
 
-    def _on_exit_search_btn(self):
+    def _on_exit_before_clear(self):
+        self.is_searching = False # exits search
         self.window.exit_search_btn.forget()
         self.window.treeview.focus_set() # focus away from search bar
         self.window.search_var.set(APIWindow.SEARCH_INPUT_HINT) # reset search bar
+        
+
+    def _on_exit_search_btn(self):
+        self._on_exit_before_clear()
         self.window.clear_treeview()
         self._swap_dataframes()
         self._populate_treeview(self.active_df)
+        print(self.is_searching)
 
     def _on_treeview_click(self, event):
         clicked_region = self.window.treeview.identify_region(event.x, event.y)
@@ -89,7 +125,7 @@ class DataAnalyzerController:
 
             # treat columns as int/float, sort, transform back into strings
             if col_name in DataCleaner.FLOAT_COLS:
-                self.active_df[col_name] = self.active_df[col_name].str.replace(",", "").astype(float)
+                self.active_df[col_name] = self.active_df[col_name].str.replace(",", "").str.replace("%", "").astype(float)
                 self.active_df = self.active_df.sort_values(col_name, ascending=self.sort_bool)
                 self.active_df = self.data_cleaner.format_float_column(col_name, self.active_df)
             elif col_name in DataCleaner.INT_COLS:

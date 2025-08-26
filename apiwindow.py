@@ -7,58 +7,6 @@ from typing import Callable
 
 import webbrowser
 
-"""
-TODO:
-*-------------
-Current Issues:
-- Entering any number throws:
-  Cannot convert non-finite values (NA or inf) to integer
-    - This might happen due to a failed api connection
-- Closing the current search after immediately searching brings the user
-  back to the table of the original search, no way to get back to the
-  main table.
-*-------------
-"""
-
-"""
-active: entire df
-inactive: none
-
-ON_SEARCH:
-if we are not in a search, swap the dataframes.
-active is now inactive, and inactive is now vice versa.
-we read inactive and find matches.
-these matches are added to active and table is populated.
-
-ON_EXIT:
-swap active and inactive.
-clearing inactive isn't necessary, but we can still do it.h.
-
-TODO: Swaps fail from this above approach.
-After searching again, the table does not modify itself.
-Then, after leaving search, the true searched table shows, leaving us in the same state as before.
-
-
-"""
-
-"""
-
-
-* Consider ensuring popups adhere to light/dark mode.
-*** Disable search functionality while data is populating.
-* Ensure program is runnable from main
-* Remove/Rename Old/New Classes
-* Remove files unneeded
-* Rewrite README for release
-* Update requirements.txt
-
-* Structurally:
-* Ensure classes are neat
-* Ensure all classes are separated by its own file
-* Ensure all classes and methods are documented
-* Ensure un-needed methods are private
-"""
-
 class APIWindow(tk.Tk):
     COIN_INPUT_HINT = "Enter a coin value..."
     SEARCH_INPUT_HINT = "Enter an item name..."
@@ -67,12 +15,13 @@ class APIWindow(tk.Tk):
 
     ERROR_COIN_INPUT = "Please enter a valid integer!"
     INVALID_SEARCH_INPUT = "Please fetch prices before searching!"
+    SPACES_IN_SEARCH_INPUT = "Please enter a non-blank input when searching!"
     EXPORT_ERROR = "Please fetch prices before exporting!"
 
     TREEVIEW_BODY = "Treeview"
     ENTRY_STYLE = "TEntry"
 
-    GITHUB_REPO_URL = "https://github.com/PMarr62/SkyblockDataAnalyzer"
+    GITHUB_REPO_URL = "https://github.com/PMarr62/SkyblockDataAnalyzer/blob/main/FAQ.md"
 
     def __init__(self):
         super().__init__()
@@ -94,7 +43,9 @@ class APIWindow(tk.Tk):
 
         # Text Tracking
         self.coin_input_var = tk.StringVar()
+        self.coin_input_has_typed = False
         self.search_var = tk.StringVar()
+        self.search_var_has_typed = False
 
         # Styling
         self.style = ttk.Style()
@@ -128,11 +79,11 @@ class APIWindow(tk.Tk):
         set_theme.add_command(label="Light mode", command=self._set_light_mode)
         set_theme.add_command(label="Dark mode", command=self._set_dark_mode)
         
-        file_menubar.add_command(label="Export data to csv...", command=export_comm)
+        file_menubar.add_command(label="Export data to .csv...", command=export_comm)
         file_menubar.add_separator()
         file_menubar.add_command(label="Exit", command=self.destroy)
 
-        help_menubar.add_command(label="Go to GitHub repository...", command=lambda:webbrowser.open(APIWindow.GITHUB_REPO_URL))
+        help_menubar.add_command(label="Go to GitHub FAQ...", command=lambda:webbrowser.open(APIWindow.GITHUB_REPO_URL))
 
     def set_row_in_treeview(self, row: pd.Series) -> None:
         elements = list(row) #truncates index column
@@ -205,8 +156,16 @@ class APIWindow(tk.Tk):
         self.search_btn.config(foreground=fg, background=bg)
         self.exit_search_btn.config(foreground=fg, background=bg)
 
-    def _entry_focus_in(self, event, hint: str, input_box: ttk.Entry):
-        if input_box.get() == hint:
+    def _coin_entry_focus_in(self, event):
+        if self.coin_input_var.get() == APIWindow.COIN_INPUT_HINT and not self.coin_input_has_typed:
+            self.coin_input_box.delete(0, tk.END)
+
+    def _coin_entry_focus_out(self, event):
+        if self.coin_input_var.get() == "":
+            self.coin_input_box.insert(0, APIWindow.COIN_INPUT_HINT)
+
+    def _entry_focus_in(self, event, hint: str, input_box: ttk.Entry, has_typed: bool):
+        if input_box.get() == hint and not has_typed:
             input_box.delete(0, tk.END)
 
     def _entry_focus_out(self, event, hint: str, input_box: ttk.Entry):
@@ -259,7 +218,7 @@ class APIWindow(tk.Tk):
         self.treeview["show"] = "headings"
         
         for col in DataAnalyzer.COL_NAMES:
-            self.treeview.column(col, anchor="center", width=75, minwidth=50)
+            self.treeview.column(col, anchor="center", width=60, minwidth=40)
             self.treeview.heading(col, text=col)
 
 

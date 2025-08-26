@@ -3,7 +3,7 @@ import pandas as pd
 class DataCleaner:
     STRING_COLS = ["Item Name"]
     INT_COLS = ["Buy Price", "Sell Price", "Quantity", "Profit", "Leftover"]
-    FLOAT_COLS = ["Buy Wait", "Sell Wait", "Total Wait"]
+    FLOAT_COLS = ["ROI", "Buy Wait", "Sell Wait", "Total Wait"]
 
     def format_int_column(self, col: str, df: pd.DataFrame) -> pd.DataFrame:
         if col not in DataCleaner.INT_COLS:
@@ -17,6 +17,8 @@ class DataCleaner:
         if col not in DataCleaner.FLOAT_COLS:
             return df
         df[col] = df[col].apply(lambda x: f"{x:,.1f}")
+        if col == "ROI":
+            df[col] = df[col].astype(str) + "%"
         return df
 
 

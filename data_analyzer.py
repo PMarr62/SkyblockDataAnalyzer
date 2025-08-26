@@ -11,7 +11,7 @@ class DataAnalyzer:
     BUY_ORDER = "sell"
     SELL_OFFER = "buy"
 
-    COL_NAMES = ["Item Name", "Buy Price", "Sell Price", "Quantity", "Profit", "Leftover", "Buy Wait", "Sell Wait", "Total Wait"]
+    COL_NAMES = ["Item Name", "Buy Price", "Sell Price", "Quantity", "Profit", "ROI", "Leftover", "Buy Wait", "Sell Wait", "Total Wait"]
 
     MAX_QUANTITY = 71680
     HOURS_PER_WEEK = 168
@@ -44,8 +44,12 @@ class DataAnalyzer:
             total_wait_time = buy_wait_time + sell_wait_time
 
             leftover = user_coins - buy_cost
+            
+            # handling numpy's nan scalar divide warning
+            with np.errstate(invalid="ignore", divide="ignore"):
+                roi = (profit / buy_cost) * 100
 
-            agg_info = [result_item, buy_cost, craft_sell, craft_quantity, profit, leftover, buy_wait_time, sell_wait_time, total_wait_time]
+            agg_info = [result_item, buy_cost, craft_sell, craft_quantity, profit, roi, leftover, buy_wait_time, sell_wait_time, total_wait_time]
             computed_results.append(agg_info)
         return pd.DataFrame(computed_results, columns=DataAnalyzer.COL_NAMES)
 

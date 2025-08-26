@@ -1,0 +1,29 @@
+"""
+TODO:
+*-------------
+Current Issues:
+ -> Pressing search with no text while not focused on the search textbox
+ -> effectively searches for the SEARCH_INPUT_HINT
+*-------------
+
+When would we want to track if we've typed in a box?
+When we go to clear the entry boxes and if we've actually typed, we do not clear.
+This happens under the rare circumstance if the user types the hint into the box,
+and upon clicking into it, it disappears.
+
+
+* Consider ensuring popups adhere to light/dark mode.
+*** Disable search functionality while data is populating.
+* Ensure program is runnable from main
+* Remove/Rename Old/New Classes
+* Remove files unneeded
+* Rewrite README for release
+* Update requirements.txt
+
+* Structurally:
+* Ensure classes are neat
+* Ensure all classes are separated by its own file
+* Ensure all classes and methods are documented
+    - this includes typing all variables and adding returns ->.
+* Ensure un-needed methods are private
+"""

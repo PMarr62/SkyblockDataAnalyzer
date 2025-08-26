@@ -11,7 +11,10 @@ class APISearcher:
     VALUE_ERRORMSG = "Count argument must be at least 1."
     SUBMTD_ERRORMSG = "Submethod invalid or not specified. Use BUY/SELL."
     
-    DEFAULT_SEARCH = {"amount": np.nan, "pricePerUnit": np.nan, "orders": np.nan}
+    DEFAULT_BUY_SELL_SEARCH = {"amount": np.nan, "pricePerUnit": np.nan, "orders": np.nan}
+    DEFAULT_QUICK_SEARCH = {"productId": "", "sellPrice": np.nan, "sellVolume": np.nan,
+                            "sellMovingWeek": np.nan, "sellOrders": np.nan, "buyPrice": np.nan,
+                            "buyVolume": np.nan, "buyMovingWeek": np.nan, "buyOrders": np.nan}
 
     def __init__(self, api_reader: APIReader):
         self.set_api_reader(api_reader)
@@ -26,8 +29,9 @@ class APISearcher:
         return {}
     
     def _search_top_n(self, item_id, submethod="", count=1):
+        default_df = pd.DataFrame(APISearcher.DEFAULT_BUY_SELL_SEARCH, index=[0])
         if not self.api_reader.okay():
-            return APISearcher.DEFAULT_SEARCH
+            return default_df
         if submethod not in [APISearcher.SELL, APISearcher.BUY]:
             raise ValueError(APISearcher.SUBMTD_ERRORMSG)
         if count < 1:
@@ -36,17 +40,17 @@ class APISearcher:
         stored_results = []
         pre_search = self._search_by_id(item_id)
         if not pre_search:
-            return None
+            return default_df
         search_result = pre_search.get(submethod)
 
         # Ensuring we iterate over nonempty values
+        if not search_result:
+            return default_df
         count = len(search_result) if len(search_result) < count else count
-
+        if count == 0:
+            return default_df
         for i in range(count):
             stored_results.append(search_result[i])
-        if count == 0:
-            # fills blanks df with default values
-            stored_results.append(APISearcher.DEFAULT_SEARCH)
         return pd.DataFrame(stored_results)
     
     def search_top_buy(self, item_id, count=1):
@@ -59,6 +63,6 @@ class APISearcher:
         valid_search = self._search_by_id(item_id)
         if valid_search:
             return valid_search.get(APISearcher.QUICK)
-        return {}
+        return APISearcher.DEFAULT_QUICK_SEARCH
 
         

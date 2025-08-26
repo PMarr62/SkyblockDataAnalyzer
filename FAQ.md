@@ -10,6 +10,8 @@ Because this API is publically listed, you do not need to provide an API key to 
 
 ## What does each column mean?
 
+Each column in this program signifies details about every craftable item:
+
 - Item Name: The name of the item you will eventually sell back to the Bazaar.
 - Buy Price: The maximum amount of coins you will spend at the Bazaar acquiring the necessary materials to craft the resulting items.
 - Sell Price: The minimum quantity you can list your resulting items at in the "sell offer" section of the Bazaar. Note that you can list your crafted items for more, but note that it may take longer for your order to fill.
@@ -27,7 +29,6 @@ When an item does not appear in the search results, this can happen for two main
 1. (The most likely): The item you are searching for is not a profitable craft flip at this current point in time. Items can fluctuate in price, and profits can scale as the days and weeks go on. In other words, crafting the desired item will result in you losing coins.
 2. The item is very new to Skyblock, and I have not added the recipe to the list of recipes to check.
 
-## An error appeared in the console, what should I do?
+## Something unexpected happened, what should I do?
 
 Open a new issue and descibe your issue. If it is reproducible, list the steps to cause the error. I will attend to fix it as soon as possible.
-

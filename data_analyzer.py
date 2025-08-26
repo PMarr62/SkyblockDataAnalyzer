@@ -70,8 +70,9 @@ class DataAnalyzer:
         wait_time = 0
         for item, quantity in recipe.items():
             quick_status = self.api_searcher.search_quick_status(item)
-                    # quick status reports items sold/bought in a week, we convert to hourly.
-            items_per_week = quick_status.get(f"{type_of_wait}{DataAnalyzer.WEEKLY_MOVED}")
-            if items_per_week:
-                wait_time += (quantity * DataAnalyzer.HOURS_PER_WEEK) / items_per_week
+            if quick_status:
+            # quick status reports items sold/bought in a week, we convert to hourly.
+                items_per_week = quick_status.get(f"{type_of_wait}{DataAnalyzer.WEEKLY_MOVED}")
+                if items_per_week:
+                    wait_time += (quantity * DataAnalyzer.HOURS_PER_WEEK) / items_per_week
         return wait_time

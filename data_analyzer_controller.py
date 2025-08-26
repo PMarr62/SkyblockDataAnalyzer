@@ -12,6 +12,8 @@ import pandas as pd
 import numpy as np
 from typing import Callable
 from thefuzz import process
+import tkinter as tk
+from tkinter import ttk
 
 class DataAnalyzerController:
 
@@ -33,8 +35,8 @@ class DataAnalyzerController:
         self.window.treeview.bind("<Button-1>", self._on_treeview_click)
 
         # monitors when boxes are typed into (dealing with placeholder text)
-        self.window.coin_input_box.bind("<Key>", self._on_type_coin_input_box)
-        self.window.search_box.bind("<Key>", self._on_type_search_box)
+        self.window.coin_input_box.bind("<Key>", lambda e: self._on_type_box(e, APIWindow.COIN_INPUT_VAR))
+        self.window.search_box.bind("<Key>", lambda e: self._on_type_box(e, APIWindow.SEARCH_VAR))
 
     def start(self):
         # we setup the menubar outside of apiwindow since we need dataframe data to export.
@@ -42,20 +44,23 @@ class DataAnalyzerController:
         self.window.setup_menu_bar(self._export_dataframe)
         self.window.start()
 
+    def _on_type_box(self, event, entry_var: str):
+        check_len = len(getattr(self.window, entry_var).get())
+        setattr(self.window, APIWindow.VAR_BOOL_MAPPING[entry_var], check_len > 0)
+
     def _on_coin_input_btn(self):
         # get coin count.
         coin_count: int
         try:
-            # We should exit search before searching.
-            if self.is_searching:
-                self._on_exit_before_clear()
+            # We should force exit search before querying API.
+            self._on_exit_before_clear()
             self._disable_while_querying()
             coin_count = int(self.window.coin_input_var.get())
             self.window.clear_treeview()
             result_df = self.data_analyzer.compute_profit(coin_count)
             self.active_df = self.data_cleaner.run_clean(result_df)
             self._populate_treeview(self.active_df)
-        except ValueError:
+        except ValueError as e:
             self.window.create_popup(self.window.ERROR_COIN_INPUT)
         finally:
             self._enable_after_querying()
@@ -112,7 +117,6 @@ class DataAnalyzerController:
         self.window.clear_treeview()
         self._swap_dataframes()
         self._populate_treeview(self.active_df)
-        print(self.is_searching)
 
     def _on_treeview_click(self, event):
         clicked_region = self.window.treeview.identify_region(event.x, event.y)

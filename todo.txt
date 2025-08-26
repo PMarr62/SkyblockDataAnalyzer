@@ -3,7 +3,10 @@ TODO:
 *-------------
 Current Issues:
  -> Pressing search with no text while not focused on the search textbox
- -> effectively searches for the SEARCH_INPUT_HINT
+    effectively searches for the SEARCH_INPUT_HINT
+
+ -> Typing in search, querying results, then clicking search allows
+    for an editable hint text.
 *-------------
 
 When would we want to track if we've typed in a box?

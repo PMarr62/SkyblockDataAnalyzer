@@ -21,6 +21,18 @@ class APIWindow(tk.Tk):
     TREEVIEW_BODY = "Treeview"
     ENTRY_STYLE = "TEntry"
 
+    COIN_INPUT_VAR = "coin_input_var"
+    SEARCH_VAR = "search_var"
+
+    VAR_BOOL_MAPPING = {
+        COIN_INPUT_VAR: "coin_input_var_has_typed",
+        SEARCH_VAR: "search_var_has_typed"
+    }
+    VAR_HINT_MAPPING = {
+        COIN_INPUT_VAR: COIN_INPUT_HINT,
+        SEARCH_VAR: SEARCH_INPUT_HINT
+    }
+
     GITHUB_REPO_URL = "https://github.com/PMarr62/SkyblockDataAnalyzer/blob/main/FAQ.md"
 
     def __init__(self):
@@ -43,8 +55,10 @@ class APIWindow(tk.Tk):
 
         # Text Tracking
         self.coin_input_var = tk.StringVar()
-        self.coin_input_has_typed = False
         self.search_var = tk.StringVar()
+
+        # Used to track if a user has a typed value in an entry
+        self.coin_input_var_has_typed = False
         self.search_var_has_typed = False
 
         # Styling
@@ -156,21 +170,18 @@ class APIWindow(tk.Tk):
         self.search_btn.config(foreground=fg, background=bg)
         self.exit_search_btn.config(foreground=fg, background=bg)
 
-    def _coin_entry_focus_in(self, event):
-        if self.coin_input_var.get() == APIWindow.COIN_INPUT_HINT and not self.coin_input_has_typed:
-            self.coin_input_box.delete(0, tk.END)
+    def _entry_focus_in(self, event, entry_var: str):
+        # input_box.get() / .set() == getattr(self, entry_var).get() / .set()
+        matches_hint = getattr(self, entry_var).get() == APIWindow.VAR_HINT_MAPPING[entry_var]
+        has_typed = getattr(self, APIWindow.VAR_BOOL_MAPPING[entry_var])
+        if matches_hint and not has_typed:
+            getattr(self, entry_var).set("")
 
-    def _coin_entry_focus_out(self, event):
-        if self.coin_input_var.get() == "":
-            self.coin_input_box.insert(0, APIWindow.COIN_INPUT_HINT)
-
-    def _entry_focus_in(self, event, hint: str, input_box: ttk.Entry, has_typed: bool):
-        if input_box.get() == hint and not has_typed:
-            input_box.delete(0, tk.END)
-
-    def _entry_focus_out(self, event, hint: str, input_box: ttk.Entry):
-        if input_box.get() == "":
-            input_box.insert(0, hint)
+    def _entry_focus_out(self, event, entry_var: str):
+        var = getattr(self, entry_var)
+        if var.get() == "":
+            var.set(APIWindow.VAR_HINT_MAPPING[entry_var])
+            setattr(self, APIWindow.VAR_BOOL_MAPPING[entry_var], False)
         
     def _create_window(self):
         main_frame = tk.Frame(self) # Will hold everything
@@ -204,10 +215,10 @@ class APIWindow(tk.Tk):
         self.treeview.pack(fill="both", expand=True)
 
         # setup event watches for text boxes
-        self.coin_input_box.bind("<FocusIn>", lambda e: self._entry_focus_in(e, APIWindow.COIN_INPUT_HINT, self.coin_input_box))
-        self.coin_input_box.bind("<FocusOut>", lambda e: self._entry_focus_out(e, APIWindow.COIN_INPUT_HINT, self.coin_input_box))
-        self.search_box.bind("<FocusIn>", lambda e: self._entry_focus_in(e, APIWindow.SEARCH_INPUT_HINT, self.search_box))
-        self.search_box.bind("<FocusOut>", lambda e: self._entry_focus_out(e, APIWindow.SEARCH_INPUT_HINT, self.search_box))
+        self.coin_input_box.bind("<FocusIn>", lambda e: self._entry_focus_in(e, APIWindow.COIN_INPUT_VAR))
+        self.coin_input_box.bind("<FocusOut>", lambda e: self._entry_focus_out(e, APIWindow.COIN_INPUT_VAR))
+        self.search_box.bind("<FocusIn>", lambda e: self._entry_focus_in(e, APIWindow.SEARCH_VAR))
+        self.search_box.bind("<FocusOut>", lambda e: self._entry_focus_out(e, APIWindow.SEARCH_VAR))
 
         # set default entry box text
         self.coin_input_var.set(APIWindow.COIN_INPUT_HINT)

@@ -24,7 +24,7 @@ class DataCleaner:
 
     def run_clean(self, df: pd.DataFrame) -> pd.DataFrame:
         #Remove NAN rows
-        df.dropna(subset='Buy Price', inplace=True)
+        df.dropna(subset=DataCleaner.STRING_COLS + DataCleaner.INT_COLS, inplace=True)
 
         #Remove <= 0 Rows
         df.drop(df[df['Profit'] <= 0].index, inplace=True)

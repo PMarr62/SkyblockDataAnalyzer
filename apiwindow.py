@@ -19,6 +19,7 @@ class APIWindow(tk.Tk):
     EXPORT_ERROR = "Please fetch prices before exporting!"
 
     TREEVIEW_BODY = "Treeview"
+    TREEVIEW_HEADER = "Treeview.Heading"
     ENTRY_STYLE = "TEntry"
 
     COIN_INPUT_VAR = "coin_input_var"
@@ -33,6 +34,16 @@ class APIWindow(tk.Tk):
         SEARCH_VAR: SEARCH_INPUT_HINT
     }
 
+    LIGHT_MODE_STYLING = {
+        "FG": "black",
+        "BG": "white"
+    }
+
+    DARK_MODE_STYLING = {
+        "FG": "white",
+        "BG": "gray10"
+    }
+
     GITHUB_REPO_URL = "https://github.com/PMarr62/SkyblockDataAnalyzer/blob/main/FAQ.md"
 
     def __init__(self):
@@ -45,10 +56,12 @@ class APIWindow(tk.Tk):
         self.coin_input_box: ttk.Entry
         self.search_box: ttk.Entry
 
-        # Buttons
         self.coin_input_btn: tk.Button
         self.search_btn: tk.Button
         self.exit_search_btn: tk.Button
+
+        # race conditions can occur with disappearing elements, this stops it
+        self.exit_search_btn_is_packed = False
 
         # Menu Bar
         self.menubar: tk.Menu
@@ -60,6 +73,11 @@ class APIWindow(tk.Tk):
         # Used to track if a user has a typed value in an entry
         self.coin_input_var_has_typed = False
         self.search_var_has_typed = False
+
+        # Responsible for popup details
+        self.popup: tk.Toplevel
+        self.popup_label: tk.Label
+        self.popup_close: tk.Button
 
         # Styling
         self.style = ttk.Style()
@@ -75,7 +93,7 @@ class APIWindow(tk.Tk):
 
     def setup_menu_bar(self, export_comm: Callable):
         self.menubar = tk.Menu(self)
-        self.config(menu=self.menubar)
+        self.configure(menu=self.menubar)
 
         file_menubar = tk.Menu(self.menubar, tearoff=0)
         view_menubar = tk.Menu(self.menubar, tearoff=0)
@@ -106,50 +124,58 @@ class APIWindow(tk.Tk):
     def clear_treeview(self):
         self.treeview.delete(*self.treeview.get_children())
 
-    def create_popup(self, message):
-        popup_window = tk.Toplevel(self)
-        popup_window.title(APIWindow.WINDOW_TITLE)
-        popup_window.transient(self)
-        popup_window.grab_set()
-
-        # get screen width/height
+    def _set_popup_geometry(self):
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        # define popup width/height
         popup_width = 300
         popup_height = 100
-        # define coordinates given screen/popup width/height
         popup_x = (screen_width - popup_width) // 2
         popup_y = (screen_height - popup_height) // 2
+        self.popup.geometry(f"{popup_width}x{popup_height}+{popup_x}+{popup_y}".format(screen_width, screen_height))
 
-        popup_window.geometry(f"{popup_width}x{popup_height}+{popup_x}+{popup_y}".format(screen_width, screen_height))
+    def create_popup(self, message):
+        self.popup = tk.Toplevel(self)
+        self.popup.title(APIWindow.WINDOW_TITLE)
+        self.popup.transient(self)
+        self.popup.grab_set()
+        self._set_popup_geometry()
 
-        popup_message = tk.Label(popup_window, text=message, wraplength=280, justify="left")
-        popup_message.pack(padx=10, pady=10)
+        self.popup_label = tk.Label(self.popup, text=message, wraplength=280, justify="left")
+        self.popup_label.pack(padx=10, pady=10)
 
-        close_button = ttk.Button(popup_window, text="OK", command=popup_window.destroy)
-        close_button.pack(padx=10)
+        self.popup_close = tk.Button(self.popup, text="OK", width=10, command=self.popup.destroy)
+        self.popup_close.pack(padx=10)
 
-        self.wait_window(popup_window)
+        style_sheet = self._get_style_sheet()
+        self._set_popup(style_sheet["FG"], style_sheet["BG"])
+
+        self.wait_window(self.popup)
 
     def _reset_col_width(self):
         for col in DataAnalyzer.COL_NAMES:
             self.treeview.column(col, width=75, minwidth=50)
 
+    def _get_style_sheet(self):
+        if self.active_is_light:
+            return APIWindow.LIGHT_MODE_STYLING
+        return APIWindow.DARK_MODE_STYLING
+
+    def _set_theme(self, style_sheet: dict):
+        fg = style_sheet["FG"]
+        bg = style_sheet["BG"]
+        self._set_frames(self, bg)
+        self._set_treeview(fg, bg)
+        self._set_entries(fg, bg)
+        self._set_buttons(fg, bg)
+
     def _set_light_mode(self):
         if not self.active_is_light:
-            self._set_frames(self, "white")
-            self._set_treeview("white", "black", "white")
-            self._set_entries("white", "black")
-            self._set_buttons("black", "white")
+            self._set_theme(APIWindow.LIGHT_MODE_STYLING)
             self.active_is_light = True
 
     def _set_dark_mode(self):
         if self.active_is_light:
-            self._set_frames(self, "gray10")
-            self._set_treeview("gray10", "white", "gray10")
-            self._set_entries("gray20", "white")
-            self._set_buttons("white", "gray20")
+            self._set_theme(APIWindow.DARK_MODE_STYLING)
             self.active_is_light = False
 
     def _set_frames(self, widget, bg_color):
@@ -158,17 +184,24 @@ class APIWindow(tk.Tk):
         for child in widget.winfo_children():
             self._set_frames(child, bg_color)
 
-    def _set_treeview(self, fieldbg, fg, bg):
-        self.style.configure(APIWindow.TREEVIEW_BODY, fieldbackground=fieldbg, foreground=fg, background=bg)
+    def _set_treeview(self, fg, bg):
+        self.style.configure(APIWindow.TREEVIEW_BODY, fieldbackground=bg, foreground=fg, background=bg)
+        self.style.configure(APIWindow.TREEVIEW_HEADER, foreground=fg, background=bg)
 
-    def _set_entries(self, fieldbg, fg):
-        self.style.configure(APIWindow.ENTRY_STYLE, fieldbackground=fieldbg, foreground=fg)
+    def _set_entries(self, fg, bg):
+        self.style.configure(APIWindow.ENTRY_STYLE, fieldbackground=bg, foreground=fg)
 
     def _set_buttons(self, fg, bg):
         # we have to set buttons individually (tk objects, not a ttk object)
-        self.coin_input_btn.config(foreground=fg, background=bg)
-        self.search_btn.config(foreground=fg, background=bg)
-        self.exit_search_btn.config(foreground=fg, background=bg)
+        self.coin_input_btn.configure(foreground=fg, background=bg)
+        self.search_btn.configure(foreground=fg, background=bg)
+        self.exit_search_btn.configure(foreground=fg, background=bg)
+
+    def _set_popup(self, fg, bg):
+        # we have to set the frame background, text, and buttons
+        self.popup.configure(background=bg)
+        self.popup_label.configure(foreground=fg, background=bg)
+        self.popup_close.configure(foreground=fg, activeforeground=fg, background=bg, activebackground=bg)
 
     def _entry_focus_in(self, event, entry_var: str):
         # input_box.get() / .set() == getattr(self, entry_var).get() / .set()

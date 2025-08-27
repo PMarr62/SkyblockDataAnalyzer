@@ -1,19 +1,13 @@
-from data_analyzer import DataAnalyzer
-from tkinterwindow import DataAnalyzerWindow
-from tkinter.filedialog import asksaveasfilename
-from queue import Queue, Empty
-from threading import Event, Thread
-
-from resources.newrecipes import CRAFTING_RECIPES
 from apiwindow import APIWindow
 from data_analyzer import DataAnalyzer
 from datacleaner import DataCleaner
+
+from tkinter.filedialog import asksaveasfilename
+from threading import Event, Thread
+
 import pandas as pd
-import numpy as np
 from typing import Callable
 from thefuzz import process
-import tkinter as tk
-from tkinter import ttk
 
 class DataAnalyzerController:
 
@@ -35,8 +29,8 @@ class DataAnalyzerController:
         self.window.treeview.bind("<Button-1>", self._on_treeview_click)
 
         # monitors when boxes are typed into (dealing with placeholder text)
-        self.window.coin_input_box.bind("<Key>", lambda e: self._on_type_box(e, APIWindow.COIN_INPUT_VAR))
-        self.window.search_box.bind("<Key>", lambda e: self._on_type_box(e, APIWindow.SEARCH_VAR))
+        self.window.coin_input_box.bind("<Key>", lambda e: self._on_type_box(e, APIWindow.COIN_INPUT_VAR, self._on_coin_input_btn))
+        self.window.search_box.bind("<Key>", lambda e: self._on_type_box(e, APIWindow.SEARCH_VAR, self._on_search_btn))
 
     def start(self):
         # we setup the menubar outside of apiwindow since we need dataframe data to export.
@@ -44,7 +38,10 @@ class DataAnalyzerController:
         self.window.setup_menu_bar(self._export_dataframe)
         self.window.start()
 
-    def _on_type_box(self, event, entry_var: str):
+    def _on_type_box(self, event, entry_var: str, search_func: Callable):
+        if event.keysym == "Return":
+            search_func()
+            return
         check_len = len(getattr(self.window, entry_var).get())
         setattr(self.window, APIWindow.VAR_BOOL_MAPPING[entry_var], check_len > 0)
 
@@ -66,6 +63,7 @@ class DataAnalyzerController:
             self._enable_after_querying()
 
     def _disable_while_querying(self):
+        self.window.treeview.configure(displaycolumns=()) # hide columns
         self.window.coin_input_btn.config(state="disabled")
         self.window.coin_input_box.state(["readonly"])
 
@@ -78,13 +76,16 @@ class DataAnalyzerController:
 
         self.window.search_btn.config(state="normal")
         self.window.search_box.state(["!readonly"])
+        self.window.treeview.configure(displaycolumns=DataAnalyzer.COL_NAMES) #show columns
 
     def _on_search_btn(self):
         if self.active_df.empty and not self.is_searching:
             self.window.create_popup(self.window.INVALID_SEARCH_INPUT)
             return
         search_query = self.window.search_var.get()
-        if len(search_query.strip()) == 0:
+        blank_search = len(search_query.strip()) == 0
+        have_not_typed = search_query == APIWindow.SEARCH_INPUT_HINT and not self.window.search_var_has_typed
+        if blank_search or have_not_typed:
             self.window.create_popup(self.window.SPACES_IN_SEARCH_INPUT)
             return
         if not self.is_searching:
@@ -94,7 +95,8 @@ class DataAnalyzerController:
         choices = self.inactive_df['Item Name']
         matches = process.extract(search_query, choices, limit=len(choices))
         # without this check, timing errors cause two buttons to periodically appear.
-        if not self.window.exit_search_btn.winfo_ismapped():
+        if not self.window.exit_search_btn_is_packed:
+            self.window.exit_search_btn_is_packed = True # update tracking variable
             self.window.exit_search_btn.pack(side="right")
         to_show = []
         for match in matches:
@@ -107,12 +109,12 @@ class DataAnalyzerController:
 
     def _on_exit_before_clear(self):
         self.is_searching = False # exits search
+        self.window.exit_search_btn_is_packed = False # reset exit button tracking variable
         self.window.search_var_has_typed = False # resets typing from search
         self.window.exit_search_btn.forget()
         self.window.treeview.focus_set() # focus away from search bar
         self.window.search_var.set(APIWindow.SEARCH_INPUT_HINT) # reset search bar
         
-
     def _on_exit_search_btn(self):
         self._disable_while_querying()
         self._on_exit_before_clear()

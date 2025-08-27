@@ -1,32 +1,25 @@
-"""
 TODO:
 *-------------
 Current Issues:
- -> Pressing search with no text while not focused on the search textbox
+1.  Pressing search with no text while not focused on the search textbox
     effectively searches for the SEARCH_INPUT_HINT
+2.  Consider adding a loading bar of some sort. Hiding search results, then
+    when load is complete, show rows. 
+3.  Change the header of the treeview for dark mode.
+4.  Consider ensuring popups adhere to light and dark mode.
 
- -> Typing in search, querying results, then clicking search allows
-    for an editable hint text.
+Fixing Implementations:
+1.  Add a check on the search enter button: if has typed is false, and our
+    text box equals the hint text, then we treat it as if the result is blank.
+2. treeview.configure(displaycolumns=()), then add the columns in the parenthesis.
+   Hiding the rows skips the render step, so rows load faster theoretically.
+
+Final Touches:
+1. Ensure program is runnable from main.
+2. Remove unused imports.
+3. Rewrite README with all new features and installation methods, etc.
+4. Update requirements.txt.
+5. Ensure classes are neat and methods are documented, typing in headers, ->, etc.
+    Full javadoc-like comments are unnecessary.
+6. Ensure unused methods outside of main are private.
 *-------------
-
-When would we want to track if we've typed in a box?
-When we go to clear the entry boxes and if we've actually typed, we do not clear.
-This happens under the rare circumstance if the user types the hint into the box,
-and upon clicking into it, it disappears.
-
-
-* Consider ensuring popups adhere to light/dark mode.
-*** Disable search functionality while data is populating.
-* Ensure program is runnable from main
-* Remove/Rename Old/New Classes
-* Remove files unneeded
-* Rewrite README for release
-* Update requirements.txt
-
-* Structurally:
-* Ensure classes are neat
-* Ensure all classes are separated by its own file
-* Ensure all classes and methods are documented
-    - this includes typing all variables and adding returns ->.
-* Ensure un-needed methods are private
-"""

@@ -107,16 +107,19 @@ class DataAnalyzerController:
 
     def _on_exit_before_clear(self):
         self.is_searching = False # exits search
+        self.window.search_var_has_typed = False # resets typing from search
         self.window.exit_search_btn.forget()
         self.window.treeview.focus_set() # focus away from search bar
         self.window.search_var.set(APIWindow.SEARCH_INPUT_HINT) # reset search bar
         
 
     def _on_exit_search_btn(self):
+        self._disable_while_querying()
         self._on_exit_before_clear()
         self.window.clear_treeview()
         self._swap_dataframes()
         self._populate_treeview(self.active_df)
+        self._enable_after_querying()
 
     def _on_treeview_click(self, event):
         clicked_region = self.window.treeview.identify_region(event.x, event.y)

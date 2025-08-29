@@ -1,3 +1,11 @@
+"""
+File Name: apiwindow.py
+
+Class to display the interactive window on-screen. Note that much of the functionality,
+such as button clicks, event watching, etc. is handled by the Data Analyzer Controller
+class, which works in conjunction with the Data Analyzer class.
+"""
+
 from tkinter import ttk
 import tkinter as tk
 
@@ -79,18 +87,23 @@ class APIWindow(tk.Tk):
         self.popup_label: tk.Label
         self.popup_close: tk.Button
 
-        # Styling
-        self.style = ttk.Style()
-        self.style.theme_use("alt")
-        self.active_is_light = True
-        self._set_light_mode()
-
         # Window setup
         self._create_window()
 
+        # Styling
+        self.style = ttk.Style()
+        self.style.theme_use("alt")
+
+        # Enable light theme 
+        self.active_is_light = False
+        self._set_light_mode()
+        self.active_is_light = True
+
+    # run app
     def start(self):
         self.mainloop()
 
+    # sets up context bar (File, View, Help)
     def setup_menu_bar(self, export_comm: Callable):
         self.menubar = tk.Menu(self)
         self.configure(menu=self.menubar)
@@ -117,23 +130,17 @@ class APIWindow(tk.Tk):
 
         help_menubar.add_command(label="Go to GitHub FAQ...", command=lambda:webbrowser.open(APIWindow.GITHUB_REPO_URL))
 
-    def set_row_in_treeview(self, row: pd.Series) -> None:
+    # Adds a row to the treeview table
+    def set_row_in_treeview(self, row: pd.Series):
         elements = list(row) #truncates index column
         self.treeview.insert("", "end", values=elements)
             
+    # Clears the treeview table
     def clear_treeview(self):
         self.treeview.delete(*self.treeview.get_children())
 
-    def _set_popup_geometry(self):
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-        popup_width = 300
-        popup_height = 100
-        popup_x = (screen_width - popup_width) // 2
-        popup_y = (screen_height - popup_height) // 2
-        self.popup.geometry(f"{popup_width}x{popup_height}+{popup_x}+{popup_y}".format(screen_width, screen_height))
-
-    def create_popup(self, message):
+    # Creates a popup with a given message
+    def create_popup(self, message: str):
         self.popup = tk.Toplevel(self)
         self.popup.title(APIWindow.WINDOW_TITLE)
         self.popup.transient(self)
@@ -151,15 +158,28 @@ class APIWindow(tk.Tk):
 
         self.wait_window(self.popup)
 
+    # Defines the coordinates on-screen where a popup will occur
+    def _set_popup_geometry(self):
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        popup_width = 300
+        popup_height = 100
+        popup_x = (screen_width - popup_width) // 2
+        popup_y = (screen_height - popup_height) // 2
+        self.popup.geometry(f"{popup_width}x{popup_height}+{popup_x}+{popup_y}".format(screen_width, screen_height))
+
+    # Resets the treeview's column width if users changed it
     def _reset_col_width(self):
         for col in DataAnalyzer.COL_NAMES:
             self.treeview.column(col, width=75, minwidth=50)
 
-    def _get_style_sheet(self):
+    # Gets the current theme's corresponding style sheet
+    def _get_style_sheet(self) -> dict:
         if self.active_is_light:
             return APIWindow.LIGHT_MODE_STYLING
         return APIWindow.DARK_MODE_STYLING
 
+    # Sets a theme from the passed style sheet
     def _set_theme(self, style_sheet: dict):
         fg = style_sheet["FG"]
         bg = style_sheet["BG"]
@@ -168,54 +188,108 @@ class APIWindow(tk.Tk):
         self._set_entries(fg, bg)
         self._set_buttons(fg, bg)
 
+    # Sets light mode for the app
     def _set_light_mode(self):
         if not self.active_is_light:
             self._set_theme(APIWindow.LIGHT_MODE_STYLING)
             self.active_is_light = True
 
+    # Sets dark mode for the app
     def _set_dark_mode(self):
         if self.active_is_light:
             self._set_theme(APIWindow.DARK_MODE_STYLING)
             self.active_is_light = False
 
-    def _set_frames(self, widget, bg_color):
+    # Changes the color of all frames in the app
+    def _set_frames(self, widget, bg_color: str):
         if isinstance(widget, tk.Frame):
             widget.configure(background=bg_color)
         for child in widget.winfo_children():
             self._set_frames(child, bg_color)
 
-    def _set_treeview(self, fg, bg):
+    # Changes the color of the treeview in the app
+    def _set_treeview(self, fg: str, bg: str):
         self.style.configure(APIWindow.TREEVIEW_BODY, fieldbackground=bg, foreground=fg, background=bg)
         self.style.configure(APIWindow.TREEVIEW_HEADER, foreground=fg, background=bg)
 
-    def _set_entries(self, fg, bg):
+    # Changes the color of the entry text boxes in the app
+    def _set_entries(self, fg: str, bg: str):
         self.style.configure(APIWindow.ENTRY_STYLE, fieldbackground=bg, foreground=fg)
 
-    def _set_buttons(self, fg, bg):
+    # Changes the color of all buttons in the app
+    def _set_buttons(self, fg: str, bg: str):
         # we have to set buttons individually (tk objects, not a ttk object)
         self.coin_input_btn.configure(foreground=fg, background=bg)
         self.search_btn.configure(foreground=fg, background=bg)
         self.exit_search_btn.configure(foreground=fg, background=bg)
 
-    def _set_popup(self, fg, bg):
+    # Changes the color of any incoming popups to be displayed
+    def _set_popup(self, fg: str, bg: str):
         # we have to set the frame background, text, and buttons
         self.popup.configure(background=bg)
         self.popup_label.configure(foreground=fg, background=bg)
         self.popup_close.configure(foreground=fg, activeforeground=fg, background=bg, activebackground=bg)
 
-    def _entry_focus_in(self, event, entry_var: str):
-        # input_box.get() / .set() == getattr(self, entry_var).get() / .set()
+    # Event to watch when a text box is clicked into
+    def _entry_focus_in(self, event: tk.Event, entry_var: str):
         matches_hint = getattr(self, entry_var).get() == APIWindow.VAR_HINT_MAPPING[entry_var]
         has_typed = getattr(self, APIWindow.VAR_BOOL_MAPPING[entry_var])
         if matches_hint and not has_typed:
             getattr(self, entry_var).set("")
 
-    def _entry_focus_out(self, event, entry_var: str):
+    # Event to watch when a text box is clicked out of
+    def _entry_focus_out(self, event: tk.Event, entry_var: str):
         var = getattr(self, entry_var)
         if var.get() == "":
             var.set(APIWindow.VAR_HINT_MAPPING[entry_var])
             setattr(self, APIWindow.VAR_BOOL_MAPPING[entry_var], False)
+
+    # Creates a tkinter button
+    def _create_button(self, frame: tk.Frame, symbol: str) -> tk.Button:
+        return tk.Button(frame, text=symbol, width=2, height=1)
+    
+    # Creates a tkinter entry
+    def _create_entry(self, frame: tk.Frame, text_var: tk.StringVar) -> ttk.Entry:
+        return ttk.Entry(frame, textvariable=text_var, style=APIWindow.ENTRY_STYLE)
+    
+    # Creates all necessary widgets for app functionality
+    def _create_widgets(self, treeview_frame: tk.Frame, coin_input_frame: tk.Frame, search_frame: tk.Frame):
+        # step 1: define widgets used
+        self.treeview = ttk.Treeview(treeview_frame, selectmode="browse", style=APIWindow.TREEVIEW_BODY)
+        self.coin_input_box = self._create_entry(coin_input_frame, self.coin_input_var) 
+        self.coin_input_btn = self._create_button(coin_input_frame, "→")
+        self.search_box = self._create_entry(search_frame, self.search_var)
+        self.search_btn = self._create_button(search_frame, "→")
+        self.exit_search_btn = self._create_button(search_frame, "X")
         
+        # step 2: define stringvars for text boxes
+        self.coin_input_var.set(APIWindow.COIN_INPUT_HINT)
+        self.search_var.set(APIWindow.SEARCH_INPUT_HINT)
+
+        # step 3: pack widgets
+        self.coin_input_box.pack(side="left")
+        self.coin_input_btn.pack(side="left")
+        self.search_btn.pack(side="right")
+        self.search_box.pack(side="right")
+        self.treeview.pack(fill="both", expand=True)
+
+    # Binds all necessary events to search boxes
+    def _bind_events(self):
+        self.coin_input_box.bind("<FocusIn>", lambda e: self._entry_focus_in(e, APIWindow.COIN_INPUT_VAR))
+        self.coin_input_box.bind("<FocusOut>", lambda e: self._entry_focus_out(e, APIWindow.COIN_INPUT_VAR))
+        self.search_box.bind("<FocusIn>", lambda e: self._entry_focus_in(e, APIWindow.SEARCH_VAR))
+        self.search_box.bind("<FocusOut>", lambda e: self._entry_focus_out(e, APIWindow.SEARCH_VAR))
+
+    # Sets up the treeview table
+    def _setup_treeview(self):
+        self.treeview["columns"] = DataAnalyzer.COL_NAMES
+        self.treeview["show"] = "headings"
+        
+        for col in DataAnalyzer.COL_NAMES:
+            self.treeview.column(col, anchor="center", width=60, minwidth=40)
+            self.treeview.heading(col, text=col)
+        
+    # Creates the application window
     def _create_window(self):
         main_frame = tk.Frame(self) # Will hold everything
         content_frame = tk.Frame(main_frame, padx=50, pady=20) # Padding
@@ -232,41 +306,11 @@ class APIWindow(tk.Tk):
         upper_right_frame.pack(side="left", fill="both", expand=True)
         treeview_frame.pack(fill="both", expand=True)
 
-        # create widgets
-        self.treeview = ttk.Treeview(treeview_frame, selectmode="browse", style=APIWindow.TREEVIEW_BODY)
-        self.coin_input_box = ttk.Entry(upper_left_frame, textvariable=self.coin_input_var, style=APIWindow.ENTRY_STYLE) 
-        self.coin_input_btn = tk.Button(upper_left_frame, text="→")
-        self.search_box = ttk.Entry(upper_right_frame, textvariable=self.search_var, style=APIWindow.ENTRY_STYLE)
-        self.search_btn = tk.Button(upper_right_frame, text="→")
-        self.exit_search_btn = tk.Button(upper_right_frame, text="X")
-
-        # pack widgets
-        self.coin_input_box.pack(side="left")
-        self.coin_input_btn.pack(side="left")
-        self.search_btn.pack(side="right")
-        self.search_box.pack(side="right")
-        self.treeview.pack(fill="both", expand=True)
+        # create and pack widgets
+        self._create_widgets(treeview_frame, upper_left_frame, upper_right_frame)
 
         # setup event watches for text boxes
-        self.coin_input_box.bind("<FocusIn>", lambda e: self._entry_focus_in(e, APIWindow.COIN_INPUT_VAR))
-        self.coin_input_box.bind("<FocusOut>", lambda e: self._entry_focus_out(e, APIWindow.COIN_INPUT_VAR))
-        self.search_box.bind("<FocusIn>", lambda e: self._entry_focus_in(e, APIWindow.SEARCH_VAR))
-        self.search_box.bind("<FocusOut>", lambda e: self._entry_focus_out(e, APIWindow.SEARCH_VAR))
-
-        # set default entry box text
-        self.coin_input_var.set(APIWindow.COIN_INPUT_HINT)
-        self.search_var.set(APIWindow.SEARCH_INPUT_HINT)
+        self._bind_events()
 
         # setup treeview
-        self.treeview["columns"] = DataAnalyzer.COL_NAMES
-        self.treeview["show"] = "headings"
-        
-        for col in DataAnalyzer.COL_NAMES:
-            self.treeview.column(col, anchor="center", width=60, minwidth=40)
-            self.treeview.heading(col, text=col)
-
-
-if __name__ == "__main__":
-    window = APIWindow()
-    window.start()
-        
+        self._setup_treeview()

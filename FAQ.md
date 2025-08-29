@@ -17,6 +17,7 @@ Each column in this program signifies details about every craftable item:
 - Sell Price: The minimum quantity you can list your resulting items at in the "sell offer" section of the Bazaar. Note that you can list your crafted items for more, but note that it may take longer for your order to fill.
 - Quantity: The amount of items you will sell back to the Bazaar.
 - Profit: The profit you will make from listing your items at the minimum price reported by sell price.
+- ROI: "Return-on-investment", The percentage at which you are getting a return on your buy order.
 - Leftover: The amount of coins you will not spend after using as many coins as possible to buy the necessary materials.
 - Buy Wait: This is the amount of time, in hours, on average for your buy order of your materials to fill.
 - Sell Wait: This is the amount of time, in hours, on average for your sell offer of your materials to sell.
@@ -26,7 +27,7 @@ Each column in this program signifies details about every craftable item:
 
 When an item does not appear in the search results, this can happen for two main reasons:
 
-1. (The most likely): The item you are searching for is not a profitable craft flip at this current point in time. Items can fluctuate in price, and profits can scale as the days and weeks go on. In other words, crafting the desired item will result in you losing coins.
+1. (The reason that is most likely to occur): The item you are searching for is not a profitable craft flip at this current point in time. Items can fluctuate in price, and profits can scale as the days and weeks go on. In other words, crafting the desired item will result in you losing coins.
 2. The item is very new to Skyblock, and I have not added the recipe to the list of recipes to check.
 
 ## Something unexpected happened, what should I do?

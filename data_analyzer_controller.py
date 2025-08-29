@@ -1,9 +1,17 @@
+"""
+File Name: data_analyzer_controller.py
+
+Backbone class to pull all strings of other classes and give functionality to the created
+APIWindow class. Binds events, creates functionality in searches and buttons.
+"""
+
 from apiwindow import APIWindow
 from data_analyzer import DataAnalyzer
 from datacleaner import DataCleaner
 
+import tkinter as tk
 from tkinter.filedialog import asksaveasfilename
-from threading import Event, Thread
+from threading import Thread
 
 import pandas as pd
 from typing import Callable
@@ -49,10 +57,10 @@ class DataAnalyzerController:
         # get coin count.
         coin_count: int
         try:
+            coin_count = int(self.window.coin_input_var.get())
             # We should force exit search before querying API.
             self._on_exit_before_clear()
             self._disable_while_querying()
-            coin_count = int(self.window.coin_input_var.get())
             self.window.clear_treeview()
             result_df = self.data_analyzer.compute_profit(coin_count)
             self.active_df = self.data_cleaner.run_clean(result_df)
@@ -123,7 +131,7 @@ class DataAnalyzerController:
         self._populate_treeview(self.active_df)
         self._enable_after_querying()
 
-    def _on_treeview_click(self, event):
+    def _on_treeview_click(self, event: tk.Event):
         clicked_region = self.window.treeview.identify_region(event.x, event.y)
         # the second check ensures columns arent sorted while data is still populating
         if clicked_region == "heading" and self.window.coin_input_btn["state"] == "normal" and not self.active_df.empty:
@@ -174,7 +182,7 @@ class DataAnalyzerController:
         # swaps the active and inactive dataframes
         self.active_df, self.inactive_df = self.inactive_df, self.active_df
 
-    def _get_column_name(self, clicked_col) -> str:
+    def _get_column_name(self, clicked_col: str) -> str:
         # turns a "#n" into the respective column name
         col_index = int(clicked_col.replace("#", "")) - 1
         return DataAnalyzer.COL_NAMES[col_index]

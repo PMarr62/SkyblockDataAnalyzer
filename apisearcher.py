@@ -1,3 +1,9 @@
+"""
+File Name: apisearcher.py
+
+Class to use search functionalities to find respective data in the APIReader object.
+"""
+
 import pandas as pd
 import numpy as np
 
@@ -19,16 +25,18 @@ class APISearcher:
     def __init__(self, api_reader: APIReader):
         self.set_api_reader(api_reader)
 
+    # designates an APIReader object to this object.
     def set_api_reader(self, api_reader: APIReader):
         self.api_reader = api_reader
 
-    # returns entire subdictionary related to a specific item
-    def _search_by_id(self, item_id):
+    # returns entire subdictionary from API related to a specific item
+    def _search_by_id(self, item_id) -> dict:
         if self.api_reader.okay():
-            return self.api_reader.json_response.get(item_id)
+            return self.api_reader.json_response.get(item_id, {})
         return {}
     
-    def _search_top_n(self, item_id, submethod="", count=1):
+    # returns n pricings of buy / sell orders of a specific item.
+    def _search_top_n(self, item_id: str, submethod: str="", count: int=1) -> pd.DataFrame:
         default_df = pd.DataFrame(APISearcher.DEFAULT_BUY_SELL_SEARCH, index=[0])
         if not self.api_reader.okay():
             return default_df
@@ -53,16 +61,17 @@ class APISearcher:
             stored_results.append(search_result[i])
         return pd.DataFrame(stored_results)
     
-    def search_top_buy(self, item_id, count=1):
+    # method to return the top n buy orders of an item.
+    def search_top_buy(self, item_id: str, count: int=1) -> pd.DataFrame:
         return self._search_top_n(item_id, APISearcher.BUY, count)
     
-    def search_top_sell(self, item_id, count=1):
+    # method to return the top n sell offers of an item.
+    def search_top_sell(self, item_id: str, count: int=1) -> pd.DataFrame:
         return self._search_top_n(item_id, APISearcher.SELL, count)
     
-    def search_quick_status(self, item_id):
+    # method to return quick status information of an item.
+    def search_quick_status(self, item_id: str) -> dict:
         valid_search = self._search_by_id(item_id)
         if valid_search:
-            return valid_search.get(APISearcher.QUICK)
+            return valid_search.get(APISearcher.QUICK, APISearcher.DEFAULT_QUICK_SEARCH)
         return APISearcher.DEFAULT_QUICK_SEARCH
-
-        

@@ -1,3 +1,10 @@
+"""
+File Name: datacleaner.py
+
+Helper class to format Pandas DataFrame objects into respective, proper format for
+the APIWindow's treeview table.
+"""
+
 import pandas as pd
 
 class DataCleaner:

@@ -1,5 +1,7 @@
 """
-This is the main file for SkyblockDataAnalyzer.
+File Name: main.py
+
+Driver file to run Skyblock Data Analyzer.
 """
 
 from apireader import APIReader
@@ -20,10 +22,11 @@ def main():
 
     data_analyzer_controller = DataAnalyzerController(data_cleaner, data_analyzer, api_window)
 
-    # pre-methods
-    status_code = api_reader.update_response()
-
-    data_analyzer_controller.start()
+    api_reader.update_response()
+    if not api_reader.okay():
+        print("Status code invalid. Please try waiting a moment for API refresh, or check your connection.")
+    else:
+        data_analyzer_controller.start()
     
 
 if __name__ == "__main__":

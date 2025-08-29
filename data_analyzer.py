@@ -1,4 +1,10 @@
-from apireader import APIReader
+"""
+File Name: data_analyzer.py
+
+Class to compute profits of crafts, given a coin input. Results are returned in a
+Pandas DataFrame object.
+"""
+
 from apisearcher import APISearcher
 from resources.newrecipes import CRAFTING_RECIPES
 
@@ -45,7 +51,7 @@ class DataAnalyzer:
 
             leftover = user_coins - buy_cost
             
-            # handling numpy's nan scalar divide warning
+            # handling numpy's nan scalar divide warning (okay to ignore for this use)
             with np.errstate(invalid="ignore", divide="ignore"):
                 roi = (profit / buy_cost) * 100
 
@@ -53,7 +59,7 @@ class DataAnalyzer:
             computed_results.append(agg_info)
         return pd.DataFrame(computed_results, columns=DataAnalyzer.COL_NAMES)
 
-    def _compute_craft_cost(self, recipe):
+    def _compute_craft_cost(self, recipe: dict) -> float:
         cost = 0
         for item, quantity in recipe.items():
             # returns a df, we find the first price index and multiply it by quantity
@@ -64,7 +70,7 @@ class DataAnalyzer:
             return np.nan
         return cost
     
-    def _compute_wait_time(self, recipe, type_of_wait):
+    def _compute_wait_time(self, recipe: dict, type_of_wait: str) -> float:
         if type_of_wait not in ["buy", "sell"]:
             return -1
         wait_time = 0
